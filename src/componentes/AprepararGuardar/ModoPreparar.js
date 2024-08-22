@@ -222,9 +222,10 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   }, []);
 
   const validateButtonSave = () => {
-    const productsHaveChange = saveDataNew.some((item) => item);
-    if (!saveDataNew?.length && !productsHaveChange) return true;
-    return !productsHaveChange;
+    const allProducsHavePessage = pedidoApreparar.Productos.every( product =>
+      product?.Pesaje != null || product?.Pesaje !== undefined
+    )
+    return !allProducsHavePessage
   };
 
   useEffect(() => {
@@ -341,14 +342,15 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
           <button
             onClick={salir}
             className="fas fa-window-close btn btn-red"
-          ></button>
+          >
+          </button>
           <button
             type="submit"
             onClick={(e) => onGuardar(e, pedidoApreparar)}
             className="btn"
             disabled={validateButtonSave()}
           >
-            Guardar
+            Enviar a facturacion
           </button>
         </div>
       </div>

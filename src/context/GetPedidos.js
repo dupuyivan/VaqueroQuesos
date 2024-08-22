@@ -138,10 +138,12 @@ export const GetPedidosProvider = ({ children }) => {
       clearInterval(interval);
     };
   }, []);
+
   useEffect(() => {
     setIsLoading(true);
     pedirPedidosAPreparar();
   }, []);
+
   useEffect(() => {
     let timeout;
     if (pedidosComparar) {
