@@ -61,46 +61,51 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     }
   };
 
-  // const handlePesajeProvisorio = async (obj) => {
-  //   try {
-  //     const auth = JSON.parse(sessionStorage.getItem("auth"));
-  //     const result = await fetch(
-  //       `${BASE_URL}iPedidosSP/PrepararProvisorioGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdClienteRegistro=${pedido.IdCliente}`,
-  //       {
-  //         method: "POST",
-  //         body: JSON.stringify(obj),
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
+  const handlePesajeProvisorio = async (obj) => {
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
 
-  //     if (result.status !== 200) {
-  //       if (result.status === 401) return push("/");
-  //       throw new Error("error al guardar pesaje provisorio");
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //     toast.error(err);
-  //   }
-  // };
+    try {
+      const result = await fetch(
+        `${BASE_URL}iPedidosSP/PrepararProvisorioGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdClienteRegistro=${pedido.IdCliente}`,
+        {
+          method: "POST",
+          body: JSON.stringify(obj),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+
+        if (result.status === 401) return push("/");
+
+        if(result.ok) toast.success('Pesaje guardado exitosamente');
+    } catch (err) {
+      console.log(err);
+      toast.error(err);
+    }
+  };
+
   /* Manejadores de eventos */
-  const handlePesar = (productoApesar) => (e) => {
+  const handlePesar = (productoApesar) => async (e) => {
+    await obtenerPesajesProvisorios()
     setProductoApesar(productoApesar);
     obtenerPedidos(productoApesar);
   };
   const handleGuardarPesaje = (pesaje) => (e) => {
     const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } = pesaje;
+
     let ProductoPesado = pedidoApreparar.Productos;
+
     ProductoPesado[producto.index].Pesaje = {
       PesoBruto,
       Taras,
       PesoPorPieza,
       PesoNeto,
     };
+
     ProductoPesado[producto.index].CantidadAnterior =
       ProductoPesado[producto.index].Cantidad;
     ProductoPesado[producto.index].Cantidad = producto.Cantidad;
+
     if (
       ProductoPesado[producto.index].CantidadAnterior <=
       ProductoPesado[producto.index].Cantidad
@@ -108,15 +113,21 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       ProductoPesado[producto.index].NuevoPedido = false;
       ProductoPesado[producto.index].DesecharFaltante = false;
     }
+
     const cloneSaveData = [...saveDataNew];
+
     cloneSaveData[producto.index] = true;
+
     setSaveDataNew(cloneSaveData);
+
     setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
+
     const getObj = [
       ProductoPesado.find(
         ({ idPedidosProd }) => idPedidosProd === pesaje.producto.idPedidosProd
       ),
     ];
+
     //se comenta para evitar guardado innecesario de pesajeProvisorio. Se guarda desde "Preparación"
     const pesajeProvisorioFind = getObj.map(
       ({ Cantidad, idPedidosProd, idMedidaPrinc, Pesaje }) => ({
@@ -133,8 +144,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
         })),
       })
     );
-    //
-    // handlePesajeProvisorio(pesajeProvisorioFind[0]);
+
+    handlePesajeProvisorio(pesajeProvisorioFind[0]);
     setProductoApesar(undefined);
   };
 
@@ -404,8 +415,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                         <i className="fas fa-trash"></i>
                       </button>
                     </div>
-                    {!Pesaje ? (
-                      <button
+                    <button
                         onClick={handlePesar({
                           ...pedidoApreparar.Productos[indexProd],
                           index: indexProd,
@@ -414,14 +424,6 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                       >
                         Pesar
                       </button>
-                    ) : (
-                      <button
-                        className="boton pesaje"
-                        onClick={handleEliminarPesaje(indexProd)}
-                      >
-                        Cancelar
-                      </button>
-                    )}
                   </div>
                 </td>
                 <td>{`${Cantidad} ${Medida}`}</td>

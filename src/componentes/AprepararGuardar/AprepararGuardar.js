@@ -139,6 +139,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
       console.log(err);
     }
   };
+
   useEffect(() => {
     setPedidosFiltrados(pedidosPendientes);
   }, [pedidosPendientes]);
