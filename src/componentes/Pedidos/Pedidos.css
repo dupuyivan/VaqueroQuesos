@@ -1,0 +1,215 @@
+.pedidos {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4em;
+}
+.pedidos .controles {
+  position: fixed;
+  width: 80%;
+  z-index: 1;
+  top: 0;
+  background: #fff;
+}
+.pedidos .controles input[type="text"] {
+  max-width: 50%;
+  padding: 0.5em;
+  margin-top: 1em;
+  font-weight: 500;
+}
+
+.controles .titulo {
+  font-size: 2em;
+  display: inline-block;
+  width: 100%;
+  align-self: center;
+  text-align: center;
+  font-weight: bold;
+}
+
+.pedidos .contenedor-tabla .contenedor-cliente .btn {
+  margin: 0.2em 0.2em;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  background: green;
+  border: none;
+  transition: 0.3s ease all;
+  border-radius: 0.2em;
+  max-width: fit-content;
+}
+.pedidos .contenedor-tabla .contenedor-cliente .btn:hover {
+  background: rgba(0, 128, 0, 0.726);
+}
+
+/* Contenedores de la tabla */
+
+.contenedor-tabla {
+  font-size: 0.8em;
+  margin: 3em auto 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contenedor-tabla .contenedor-cliente {
+  width: 80%;
+  height: 2em;
+  margin-top: 2em;
+  font-size: 1.5em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+.spin {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #484848;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+  margin: 10cm auto;
+}
+/* Tabla */
+
+.tabla.tabla-pedidos {
+  max-width: 100%;
+  margin-top: 0;
+}
+.tabla-pedidos thead th {
+  min-width: 10%;
+  padding: 0.5em 0.8em;
+}
+
+.tabla-pedidos tbody td.producto {
+  cursor: initial !important;
+}
+.tabla.tabla-pedidos tbody td .titulo {
+  font-size: 1.1em;
+}
+
+.tabla-pedidos tbody td.cantidad-preparar {
+  display: flex;
+  flex-direction: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.tabla-pedidos tbody td.cantidad-preparar input[type="number"] {
+  width: 3em;
+  margin-right: 0.3em;
+}
+.tabla-pedidos tbody td.cantidad-preparar input[type="number"] {
+  -moz-appearance: textfield;
+}
+.tabla-pedidos tbody td.cantidad-preparar input::-webkit-outer-spin-button,
+.tabla-pedidos tbody td.cantidad-preparar input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.tabla-pedidos tbody td.cantidad-preparar .fa-check-square {
+  margin: 10px;
+  font-size: 25px;
+  cursor: pointer;
+  color: #cf963c;
+}
+
+.tabla.tabla-pedidos thead tr th:nth-child(2),
+.tabla.tabla-pedidos tbody tr td:nth-child(2) {
+  text-align: left;
+  position: inherit;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton {
+  margin: auto 0.5em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2em;
+  border-radius: 0.2em;
+  transition: all 0.2s ease;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton.nuevo {
+  color: green;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton.eliminar {
+  color: red;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton.eliminar.seleccionado {
+  color: white;
+  background: red;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton.nuevo.seleccionado {
+  color: white;
+  background: green;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton:disabled {
+  color: gray;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(1) {
+  font-size: 1.2em;
+}
+.tabla.tabla-pedidos thead tr th.header-cliente {
+  text-align: left;
+  border-bottom: 1px solid #999;
+}
+.tabla.tabla-pedidos tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.13);
+}
+/* Querys */
+
+@media (max-width: 700px) {
+  .pedidos {
+    padding-top: 0;
+  }
+  .tabla.tabla-pedidos {
+    font-size: 0.7em;
+  }
+
+  .contenedor-tabla .contenedor-cliente {
+    width: 100%;
+  }
+  .tabla.tabla-pedidos thead {
+    display: table-header-group;
+    font-size: 0.7em;
+  }
+  .contenedor-tabla {
+    overflow-x: auto;
+    width: 100vw;
+    margin: 1em auto 0px auto;
+  }
+  .pedidos .controles {
+    position: inherit;
+    margin-left: auto;
+  }
+  .pedidos .controles div {
+    display: flex;
+    flex-direction: row nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tabla-pedidos tbody td.cantidad-preparar input[type="number"] {
+    margin: 1em auto;
+    padding: 2px;
+  }
+  .pedidos .contenedor-tabla .contenedor-cliente {
+    padding: 2em 0;
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

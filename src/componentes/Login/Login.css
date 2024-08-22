@@ -1,0 +1,85 @@
+hr {
+  border: 0;
+  height: 1px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0.3em;
+  background-image: linear-gradient(to left, #fff, rgba(0, 0, 0, 0.4), #fff);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+}
+
+.inputLogin {
+  align-self: flex-end;
+}
+
+.container form .error {
+  color: red;
+  font-size: small;
+  font-weight: 500;
+}
+
+.usuario:focus,
+.contraseña:focus,
+.button:focus {
+  outline-color: black;
+}
+
+.usuario,
+.contraseña {
+  padding: 10px;
+  margin: 5px;
+  width: 100%;
+}
+.button {
+  margin: 1rem;
+  padding: 0.5rem;
+  display: block;
+  width: 100%;
+  color: black;
+  background: #fff;
+  border: 1px solid black;
+  transition: 0.3s ease all;
+  border-radius: 0.2em;
+}
+.button:hover,
+.button:active {
+  color: #fff;
+  background: black;
+}
+.button:disabled::after {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  margin: 0px 1em;
+  border-top: 2px solid gray;
+  animation: rotar 0.3s linear infinite;
+}
+.cuenta {
+  font-size: x-small;
+  line-height: 1.5em;
+  padding: 0.1em;
+  text-align: left;
+}
+
+.cuenta span a {
+  color: #cf963c;
+  text-decoration: none;
+  font-weight: bold;
+}
+@keyframes rotar {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

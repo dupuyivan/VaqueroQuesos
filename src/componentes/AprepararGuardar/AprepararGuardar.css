@@ -1,0 +1,398 @@
+.preparar {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2em;
+  transition: all 1s ease;
+  font-size: clamp(0.8em, 2vw, 1em);
+}
+.obsColor {
+  color: red;
+}
+.preparar .controles {
+  top: 0;
+  position: fixed;
+  width: 80%;
+  z-index: 1;
+  background: #fff;
+}
+.preparar .controles > div {
+  display: flex;
+  width: 40%;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+.preparar .overlay .card-producto {
+  background: #fafafa;
+
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1.5em;
+  box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.3);
+}
+.preparar .overlay .card-producto.impresion {
+  width: 50%;
+  height: 90%;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.preparar .overlay .card-producto.opcion {
+  width: 50%;
+  height: 20%;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.preparar .overlay .card-producto .formulario-botones.impresion {
+  justify-content: center;
+  padding: 0.2em 0;
+}
+.preparar .overlay .card-producto .formulario-botones {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  min-width: 80%;
+}
+.preparar .overlay .card-producto .formulario-botones.impresion {
+  justify-content: center;
+  padding: 0.2em 0;
+}
+.preparar .overlay .card-producto .formulario-botones button {
+  margin: 1em;
+  padding: 0.6em 0.8em;
+  border: none;
+  background: black;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.preparar .overlay .card-producto .formulario-botones button.confirmar {
+  background: green;
+}
+.preparar .overlay .card-producto .formulario-botones button.confirmar:hover {
+  background: rgba(0, 128, 0, 0.726);
+}
+.preparar .overlay .card-producto .formulario-botones button.cancelar {
+  background: rgb(160, 7, 7);
+}
+.preparar .overlay .card-producto .formulario-botones button.cancelar:hover {
+  background: rgba(160, 7, 7, 0.726);
+}
+.preparar .controles input[type="text"],
+.preparar .controles input[type="number"] {
+  max-width: 40%;
+  padding: 0.5em;
+  font-weight: 500;
+}
+.preparar .contenedor-tabla .contenedor-cliente {
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.preparar .contenedor-tabla .contenedor-cliente .datos {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn {
+  background: green;
+  border: none;
+  border-radius: 0.2em;
+  padding: 0.4em 0.6em;
+  margin: 5px;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s ease all;
+  font-size: 0.8em;
+  font-weight: 500;
+  transition: 0.2s all ease;
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn:hover {
+  background: rgba(0, 128, 0, 0.726);
+}
+
+.preparar .contenedor-tabla .contenedor-cliente .btn:disabled {
+  background: grey;
+  cursor: inherit;
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn.btn-red {
+  background: none;
+  color: red;
+  font-size: 1.78em;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
+}
+
+.preparar .contenedor-tabla .contenedor-cliente .btn.btn-cancelar {
+  background-color: red;
+}
+
+.preparar .contenedor-tabla .contenedor-cliente .btn.btn-cancelar:hover {
+  background: rgba(177, 5, 5, 0.726);
+}
+
+.preparar .contenedor-tabla .contenedor-cliente .btn.btn-red:hover {
+  color: rgba(255, 0, 0, 0.726);
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn-exit {
+  color: white;
+  padding: 0;
+  margin: 0;
+  font-size: 1.5em;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.preparar .contenedor-tabla {
+  padding-top: 3rem;
+}
+
+.subtitulo {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.contenedorPedidos {
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.preparar
+  .contenedor-tabla
+  .tabla.tabla.tabla-pedidos.tabla-preparar
+  tr
+  td:nth-child(2) {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.preparar
+  .contenedor-tabla
+  .tabla.tabla.tabla-pedidos.tabla-preparar
+  tr
+  td
+  .boton.pesaje {
+  padding: 3px 6px;
+  margin: auto 0.2em;
+  background: rgb(179, 128, 19);
+  color: white;
+  border: none;
+  border-radius: 2px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: 0.2s all ease;
+}
+.preparar
+  .contenedor-tabla
+  .tabla.tabla.tabla-pedidos.tabla-preparar
+  tr
+  td
+  .boton.pesaje:hover {
+  background: rgba(179, 128, 19, 0.726);
+}
+.preparar
+  .contenedor-tabla
+  .tabla.tabla.tabla-pedidos.tabla-preparar
+  tr
+  td.pesoRojo {
+  background: red;
+  color: white;
+  font-weight: bold;
+}
+
+/* Formulario de pesaje  */
+.form-tabla {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.form-tabla .tara-table {
+  min-height: 100%;
+  flex-grow: 0.8;
+  margin: 1em auto;
+  align-self: flex-start;
+}
+.form-tabla .tara-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.form-tabla .tara-table table thead {
+  background-color: #484848;
+  color: white;
+}
+.form-tabla .tara-table table thead tr th {
+  padding: 1em;
+  border-left: 1px solid gray;
+}
+.form-tabla .tara-table table tbody tr td {
+  border-left: 1px solid gray;
+  border-top: 1px solid gray;
+}
+.form-tabla .tara-table table tbody tr td {
+  padding: 1em;
+  text-align: right;
+}
+.form-tabla .tara-table table tbody tr td:nth-child(1) {
+  text-align: left;
+}
+
+.form-pesaje {
+  padding: 1rem 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: clamp(1.2em, 10vw, 1em);
+}
+.form-pesaje .boton-form {
+  background: green;
+  color: white;
+  display: block;
+  border: none;
+  border-radius: 2px;
+  width: 100%;
+  padding: 0.5em;
+  margin: 10px 10px;
+  cursor: pointer;
+  flex-grow: 1;
+}
+.form-pesaje .boton-form:hover {
+  background: rgb(11, 148, 11);
+}
+.form-pesaje .boton-form:disabled {
+  background: grey;
+  cursor: default;
+}
+.form-pesaje .flex-input {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.form-pesaje .flex-input input[type="number"] {
+  padding: 5px;
+  font-weight: 500;
+  border-radius: 2px;
+  border: 1px solid gray;
+}
+.form-pesaje .piezas-input .piezas-input-boton {
+  display: flex;
+  flex-direction: row;
+}
+.form-pesaje .piezas-input .piezas-input-boton input[type="number"] {
+  width: 80%;
+}
+.form-pesaje .piezas-input .piezas-input-boton button {
+  border: none;
+  background: rgb(179, 128, 19);
+  padding: 4px 8px;
+  border-radius: 2px;
+  margin-left: 5px;
+  color: white;
+  cursor: pointer;
+}
+.form-pesaje .flex-input .tara-input {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0px;
+}
+.form-pesaje .botones-form {
+  width: 100%;
+  display: flex;
+}
+.form-pesaje .botones-form .boton-cancelar {
+  background-color: rgb(201, 11, 11);
+}
+.form-pesaje .pesoRojo {
+  background: red;
+  color: white;
+}
+
+@media (max-width: 700px) {
+  .preparar {
+    padding-top: 0;
+  }
+  .preparar .controles {
+    position: inherit;
+    margin-left: auto;
+  }
+  .preparar .controles .impresion {
+    display: block;
+    position: initial;
+  }
+  .preparar .contenedor-tabla .tabla.tabla-pedidos {
+    margin-top: 2em;
+  }
+  .preparar .contenedor-tabla .contenedor-cliente {
+    padding: 0 5px;
+  }
+  .preparar .contenedor-tabla .contenedor-cliente .btn {
+    margin: 5px;
+  }
+  .preparar .controles .titulo {
+    display: inline-block;
+    margin-top: 0.5em;
+  }
+
+  .preparar .controles div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .form-tabla {
+    width: 100%;
+    justify-content: center;
+  }
+  .form-pesaje {
+    width: 100%;
+    align-items: center;
+  }
+  .form-pesaje .flex-input {
+    width: 80%;
+  }
+  .form-pesaje .boton-form {
+    width: 80%;
+  }
+}
+
+.form-tabla .tara-table table tbody tr .modo-pesar-input {
+  padding: 0;
+  width: 50px;
+}
+.modo-pesar-input > input {
+  border: none;
+  text-align: end;
+  padding: 1em;
+  outline: none;
+}
+.modo-pesar-input > input:disabled {
+  background-color: white;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+@keyframes rotar {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
