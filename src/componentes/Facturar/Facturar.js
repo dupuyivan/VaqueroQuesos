@@ -154,6 +154,9 @@ const Facturar = ({ idPermiso }) => {
         const json = await result.json();
 
         const PedidosAFacturarProcesados = ProcesarPedidosAFacturar(json);
+
+        console.debug('PedidosAFacturarProcesados', PedidosAFacturarProcesados)
+
         setPedidosAFacturar(PedidosAFacturarProcesados);
       } catch (err) {
         toast.error("ha ocurrido un error");
@@ -316,6 +319,7 @@ const Facturar = ({ idPermiso }) => {
               Productos,
               A,
               B,
+              Observacion,
               ObservacionFact,
               disabled = false,
             },
@@ -326,10 +330,15 @@ const Facturar = ({ idPermiso }) => {
                 <div className="datos">
                   <span>Cliente: {Cliente}</span>
                   <span>Pedido: {Pedido}</span>
-                  <span>
-                    {(ObservacionFact && "Observación: " + ObservacionFact) ||
-                      ""}
-                  </span>
+
+                  <div>
+                    <span>Observacion del vendedor:</span>
+                    <p style={{ fontWeight:'normal' }}>{Observacion}</p>
+                  </div>
+                  <div>
+                  <span>Comentario del preparador:</span>
+                    <p style={{ fontWeight:'normal' }}>{ObservacionFact}</p>
+                  </div>                 
                 </div>
 
                 <span className="porcentajes">

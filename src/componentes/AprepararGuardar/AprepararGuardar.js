@@ -38,7 +38,7 @@ const ProcesarParaGuardar = (pedido) => {
   PedidoProcesado.Fecha = new Date(Date.now()).toISOString();
   PedidoProcesado.IdCliente = pedido.IdCliente;
   PedidoProcesado.IdPedido = pedido.IdPedido;
-  PedidoProcesado.ObservacionFact = pedido.Observacion;
+  PedidoProcesado.ObservacionFact = pedido.ObservacionFact;
 
   PedidoProcesado.Productos = pedido.Productos.map(
     ({
@@ -109,9 +109,6 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
 
   /* Manejadores de Eventos  */
   const handleGuardarPreparacion = async (e, pedido) => {
-    console.debug('handleGuardarPreparacion', pedido)
-    return
-
     e.preventDefault();
     const pedidoProcesado = ProcesarParaGuardar(pedido);
     const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
