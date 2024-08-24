@@ -22,6 +22,17 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   const [saveDataNew, setSaveDataNew] = useState([]);
 
   const { push } = useHistory();
+
+  useEffect(() => {
+    pedirTaras();
+  }, []);
+
+  useEffect(() => {
+    obtenerPesajesProvisorios();
+    //eslint-disable-next-line
+  }, []);
+
+
   const obtenerPedidos = async (prod) => {
     try {
       const auth = JSON.parse(sessionStorage.getItem("auth"));
@@ -90,7 +101,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     setProductoApesar(productoApesar);
     obtenerPedidos(productoApesar);
   };
-  const handleGuardarPesaje = (pesaje) => (e) => {
+
+  const handleGuardarPesaje = (pesaje) => async (e) => {
     const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } = pesaje;
 
     let ProductoPesado = pedidoApreparar.Productos;
@@ -166,8 +178,9 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       ...pedidoApreparar,
       Productos: ProductoPesado,
     });
-    
+
   };
+
   const handleDescartarNuevoClick = (tipo, indexProd) => (e) => {
     const pedidoTemp = pedidoApreparar;
 
@@ -226,32 +239,13 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     }
   };
 
-  useEffect(() => {
-    pedirTaras();
-  }, []);
-
-  useEffect(() => {
-    obtenerPesajesProvisorios();
-    //eslint-disable-next-line
-  }, []);
-
   const validateButtonSave = () => {
-    const allProducsHavePessage = pedidoApreparar.Productos.every( product =>
-      product?.Pesaje != null || product?.Pesaje !== undefined
-    )
 
-    const areSomeProductWithMissing = pedidoApreparar.Productos.some( product => product?.DesecharFaltante )
+    const allProducsMeetsConditions = pedidoApreparar.Productos.every( product => {
+      return product?.Pesaje || product?.DesecharFaltante || product?.NuevoPedido
+    })
 
-    const areSomeProductWithNewOrder = pedidoApreparar.Productos.some( product => product?.NuevoPedido )
-
-
-    const result = !allProducsHavePessage 
-      ? areSomeProductWithMissing || areSomeProductWithNewOrder
-          ? true
-          : false
-      : true
-
-    return !result
+    return !allProducsMeetsConditions
   };
 
   useEffect(() => {
@@ -353,8 +347,6 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     });
     //eslint-disable-next-line
   }, [pesajesProvisorios, taras, prodData]);
-
-  console.log('pedidoApreparar', pedidoApreparar)
 
   return !productoApesar ? (    
     <div className="contenedor-tabla">      
@@ -461,6 +453,13 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                         className="boton pesaje"
                       >
                         Pesar
+                      </button>
+
+                      <button
+                        className="boton pesaje"
+                        onClick={handleEliminarPesaje(indexProd)}
+                      >
+                        Cancelar
                       </button>
                   </div>
                 </td>
