@@ -328,17 +328,26 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     //eslint-disable-next-line
   }, [pesajesProvisorios, taras, prodData]);
 
-  return !productoApesar ? (
-    <div className="contenedor-tabla">
+  console.log('pedidoApreparar', pedidoApreparar)
+
+  return !productoApesar ? (    
+    <div className="contenedor-tabla">      
       <div className="contenedor-cliente">
+
         <div className="datos">
           <span>Cliente: {pedidoApreparar.Cliente}</span>
 
           <span>Pedido: {pedidoApreparar.Pedido}</span>
 
           <span>Fecha: {pedidoApreparar.Fecha}</span>
+
+          <span>Observacion:</span>
+          <textarea readOnly disabled wrap="hard" style={{ width: '100%', height:"5rem", resize: "none", border: "none", fontSize: 18 }}>
+            {pedidoApreparar.Observacion}
+          </textarea>
         </div>
-        <div className="botones">
+       
+        <div className="botones" style={{ justifySelf:"end", alignSelf:"end" }}>
           <button
             onClick={salir}
             className="fas fa-window-close btn btn-red"
@@ -354,6 +363,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
           </button>
         </div>
       </div>
+
       <table className="tabla tabla-pedidos tabla-preparar">
         <thead>
           <tr>
