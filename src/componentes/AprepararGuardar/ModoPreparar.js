@@ -151,18 +151,26 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
   const handleEliminarPesaje = (index) => (e) => {
     let ProductoPesado = pedidoApreparar.Productos;
+
     ProductoPesado[index].Pesaje = undefined;
+
     ProductoPesado[index].Cantidad = ProductoPesado[index].CantidadAnterior;
+
     const cloneSaveData = [...saveDataNew];
+
     cloneSaveData[index] = false;
+
     setSaveDataNew(cloneSaveData);
+
     setPedidoApreparar({
       ...pedidoApreparar,
       Productos: ProductoPesado,
     });
+    
   };
   const handleDescartarNuevoClick = (tipo, indexProd) => (e) => {
     const pedidoTemp = pedidoApreparar;
+
     const Tipos = {
       Descartar: () => {
         pedidoTemp.Productos[indexProd].DesecharFaltante = true;
@@ -173,12 +181,18 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
         pedidoTemp.Productos[indexProd].DesecharFaltante = false;
       },
     };
+
     Tipos[tipo]();
+
     setPedidoApreparar({ ...pedidoTemp });
+
     const cloneSaveData = [...saveDataNew];
+
     cloneSaveData[indexProd] = true;
+
     setSaveDataNew(cloneSaveData);
   };
+
   const handleCancelarPesaje = (e) => {
     const cloneSaveData = [...saveDataNew];
     cloneSaveData[productoApesar.index] = false;
@@ -225,7 +239,19 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     const allProducsHavePessage = pedidoApreparar.Productos.every( product =>
       product?.Pesaje != null || product?.Pesaje !== undefined
     )
-    return !allProducsHavePessage
+
+    const areSomeProductWithMissing = pedidoApreparar.Productos.some( product => product?.DesecharFaltante )
+
+    const areSomeProductWithNewOrder = pedidoApreparar.Productos.some( product => product?.NuevoPedido )
+
+
+    const result = !allProducsHavePessage 
+      ? areSomeProductWithMissing || areSomeProductWithNewOrder
+          ? true
+          : false
+      : true
+
+    return !result
   };
 
   useEffect(() => {
@@ -470,7 +496,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
             })
           }
           value={pedidoApreparar?.ObservacionFact || ""}
-          style={{ padding: ".5rem" }}
+          style={{ width:'100%', borderColor: 'gray', borderRadius: '8px', padding: ".5rem", resize: 'none'  }}
           placeholder="Deja tu comentario.."
         />
       </div>

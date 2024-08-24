@@ -109,6 +109,9 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
 
   /* Manejadores de Eventos  */
   const handleGuardarPreparacion = async (e, pedido) => {
+    console.debug('handleGuardarPreparacion', pedido)
+    return
+
     e.preventDefault();
     const pedidoProcesado = ProcesarParaGuardar(pedido);
     const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
