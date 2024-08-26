@@ -331,14 +331,24 @@ const Facturar = ({ idPermiso }) => {
                   <span>Cliente: {Cliente}</span>
                   <span>Pedido: {Pedido}</span>
 
-                  <div>
-                    <span>Observacion del vendedor:</span>
-                    <p style={{ fontWeight:'normal' }}>{Observacion}</p>
-                  </div>
-                  <div>
-                  <span>Comentario del preparador:</span>
-                    <p style={{ fontWeight:'normal' }}>{ObservacionFact}</p>
-                  </div>                 
+
+                  { Observacion 
+                    &&  
+                    ( <div>
+                        <span>Observacion del vendedor:</span>
+                        <p style={{ fontWeight:'normal' }}>{Observacion}</p>
+                      </div>
+                    )
+                  }
+
+                  { ObservacionFact 
+                    && (
+                      <div>
+                        <span>Comentario del preparador:</span>
+                        <p style={{ fontWeight:'normal' }}>{ObservacionFact}</p>
+                      </div>  
+                    ) 
+                  }                                 
                 </div>
 
                 <span className="porcentajes">
