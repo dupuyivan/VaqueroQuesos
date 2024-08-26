@@ -164,6 +164,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   const handleEliminarPesaje = (index) => (e) => {
     let ProductoPesado = pedidoApreparar.Productos;
 
+    if(!ProductoPesado[index].Pesaje) return
+
     ProductoPesado[index].Pesaje = undefined;
 
     ProductoPesado[index].Cantidad = ProductoPesado[index].CantidadAnterior;
@@ -459,7 +461,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                         className="boton pesaje"
                         onClick={handleEliminarPesaje(indexProd)}
                       >
-                        Cancelar
+                        Eliminar pesaje
                       </button>
                   </div>
                 </td>
