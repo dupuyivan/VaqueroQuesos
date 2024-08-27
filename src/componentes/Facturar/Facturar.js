@@ -336,7 +336,7 @@ const Facturar = ({ idPermiso }) => {
                     &&  
                     ( <div>
                         <span>Observacion del vendedor:</span>
-                        <p style={{ fontWeight:'normal' }}>{Observacion}</p>
+                        <p style={{ fontWeight:'normal', color:'red' }}>{Observacion}</p>
                       </div>
                     )
                   }
@@ -345,7 +345,7 @@ const Facturar = ({ idPermiso }) => {
                     && (
                       <div>
                         <span>Comentario del preparador:</span>
-                        <p style={{ fontWeight:'normal' }}>{ObservacionFact}</p>
+                        <p style={{ fontWeight:'normal', color:'red' }}>{ObservacionFact}</p>
                       </div>  
                     ) 
                   }                                 

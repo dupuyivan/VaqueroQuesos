@@ -362,7 +362,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
           <span>Fecha: {pedidoApreparar.Fecha}</span>
 
           <span>Observacion:</span>
-          <textarea readOnly disabled wrap="hard" style={{ width: '100%', height:"5rem", resize: "none", border: "none", fontSize: 18 }}>
+          <textarea readOnly disabled wrap="hard" style={{ width: '100%', height:"5rem", resize: "none", border: "none", fontSize: 18, color:'red' }}>
             {pedidoApreparar.Observacion}
           </textarea>
         </div>
