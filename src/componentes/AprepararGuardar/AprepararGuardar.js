@@ -78,6 +78,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
     setPedidosPendientes,
     pedirPedidosAPreparar,
   } = useGetPedidos();
+
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
   const [modoPreparar, setModoPreparar] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState({});
@@ -141,6 +142,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   };
 
   useEffect(() => {
+    pedidosPendientes.sort( (pedidoA, pedidoB) => pedidoA.Pedido - pedidoB.Pedido )
     setPedidosFiltrados(pedidosPendientes);
   }, [pedidosPendientes]);
 
