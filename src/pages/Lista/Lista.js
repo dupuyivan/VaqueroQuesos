@@ -1,6 +1,6 @@
 import useModal from "../../hooks/useModal";
 import "./Lista.css";
-import { Modal } from "../../componentes";
+import { Modal } from "../../pages";
 import { Redirect, useHistory } from "react-router";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
