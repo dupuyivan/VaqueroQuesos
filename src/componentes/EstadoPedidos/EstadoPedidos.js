@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import "./EstadoPedidos.css";
 import { StateCircle } from "./StateCircle/StateCircle";
 
@@ -142,7 +141,7 @@ const EstadoPedidos = ({ idPermiso }) => {
         return push("/");
 
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/PedidosPorEstado?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/PedidosPorEstado?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
 
       if (result.status !== 200) {

@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./Facturar.css";
 
@@ -141,7 +140,7 @@ const Facturar = ({ idPermiso }) => {
         return push("/");
       try {
         const result = await fetch(
-          `${BASE_URL}iPedidosSP/ParaFacturar?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+          `${process.env.REACT_APP_BASE_URL}iPedidosSP/ParaFacturar?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
         if (result.status !== 200) {
           if (result.status === 401) {
@@ -155,8 +154,6 @@ const Facturar = ({ idPermiso }) => {
 
         const PedidosAFacturarProcesados = ProcesarPedidosAFacturar(json);
 
-        console.debug('PedidosAFacturarProcesados', PedidosAFacturarProcesados)
-
         setPedidosAFacturar(PedidosAFacturarProcesados);
       } catch (err) {
         toast.error("ha ocurrido un error");
@@ -167,7 +164,7 @@ const Facturar = ({ idPermiso }) => {
   const getDetallePesaje = async () => {
     const auth = JSON.parse(sessionStorage.getItem("auth"));
     const result = await fetch(
-      `${BASE_URL}iPedidosSP/pedidoPesoDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}&pNumeroPedido=${pedidoId.Pedido}`
+      `${process.env.REACT_APP_BASE_URL}iPedidosSP/pedidoPesoDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}&pNumeroPedido=${pedidoId.Pedido}`
     );
     if (result.status !== 200) {
       if (result.status === 401) {
@@ -209,7 +206,7 @@ const Facturar = ({ idPermiso }) => {
     const auth = JSON.parse(sessionStorage.getItem("auth"));
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/Eliminar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pPedido=${pedidosAFacturarFiltrados[index].idPedido}`,
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/Eliminar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pPedido=${pedidosAFacturarFiltrados[index].idPedido}`,
         {
           method: "POST",
           headers: {
@@ -258,7 +255,7 @@ const Facturar = ({ idPermiso }) => {
     try {
 
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
         {
           method: "POST",
           body: JSON.stringify(pedidoProcesado),
@@ -518,7 +515,7 @@ const ModalDetallePedido = ({ isOpen, onClose, data }) => {
       try {
         const auth = JSON.parse(sessionStorage.getItem("auth"));
         const result = await fetch(
-          `${BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+          `${process.env.REACT_APP_BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
         if (result.status !== 200) {
           throw new Error(result.text);

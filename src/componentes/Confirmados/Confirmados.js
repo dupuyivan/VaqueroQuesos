@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./Confirmados.css";
 
@@ -120,7 +119,7 @@ const Consulta = ({ idPermiso }) => {
       return push("/");
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/paraFacturarYFacturados?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/paraFacturarYFacturados?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
       if (result.status !== 200) {
         if (result.status === 401) {
@@ -142,7 +141,7 @@ const Consulta = ({ idPermiso }) => {
   const getDetallePesaje = async () => {
     const auth = JSON.parse(sessionStorage.getItem("auth"));
     const result = await fetch(
-      `${BASE_URL}iPedidosSP/pedidoPesoDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}&pNumeroPedido=${pedidoId.Pedido}`
+      `${process.env.REACT_APP_BASE_URL}iPedidosSP/pedidoPesoDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}&pNumeroPedido=${pedidoId.Pedido}`
     );
     if (result.status !== 200) {
       if (result.status === 401) {
@@ -195,7 +194,7 @@ const Consulta = ({ idPermiso }) => {
 
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedidoAImprimir}`
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedidoAImprimir}`
       );
 
       const pdf = await result.json();
@@ -382,7 +381,7 @@ const ModalDetallePedido = ({ isOpen, onClose, data }) => {
       try {
         const auth = JSON.parse(sessionStorage.getItem("auth"));
         const result = await fetch(
-          `${BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+          `${process.env.REACT_APP_BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
         if (result.status !== 200) {
           throw new Error(result.text);

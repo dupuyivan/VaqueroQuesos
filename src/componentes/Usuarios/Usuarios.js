@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router";
 import { BsCaretDown, BsCaretUp } from "react-icons/bs";
@@ -55,7 +54,7 @@ const Usuarios = ({ idPermiso }) => {
         return push("/");
 
       const result = await fetch(
-        `${BASE_URL}iClientesSP/ClientesDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        `${process.env.REACT_APP_BASE_URL}iClientesSP/ClientesDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
 
       if (result.status !== 200) {
@@ -94,7 +93,7 @@ const Usuarios = ({ idPermiso }) => {
       const usuarioAeliminar = users[index];
 
       const result = await fetch(
-        `${BASE_URL}iClientesSP/Borrar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pUsuarioClie=${usuarioAeliminar.IdCliente}`,
+        `${process.env.REACT_APP_BASE_URL}iClientesSP/Borrar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pUsuarioClie=${usuarioAeliminar.IdCliente}`,
         {
           method: "POST",
         }
@@ -314,7 +313,7 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
       } = inputs;
       const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
       const result = await fetch(
-        `${BASE_URL}iClientesSP/Modificar?pUsuario=${auth.usuario}&pToken=${
+        `${process.env.REACT_APP_BASE_URL}iClientesSP/Modificar?pUsuario=${auth.usuario}&pToken=${
           auth.Token
         }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
           CodigoSistExt ? CodigoSistExt : Nombre
@@ -349,7 +348,7 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
       } = inputs;
       const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
       const result = await fetch(
-        `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
+        `${process.env.REACT_APP_BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
           auth.Token
         }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
           CodigoSistExt ? CodigoSistExt : Nombre

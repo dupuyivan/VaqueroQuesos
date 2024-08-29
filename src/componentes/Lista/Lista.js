@@ -3,7 +3,6 @@ import "./Lista.css";
 import { Modal } from "../../componentes";
 import { Redirect, useHistory } from "react-router";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../BaseURL.json";
 import { Link } from "react-router-dom";
 
 function Lista() {
@@ -37,7 +36,7 @@ function Lista() {
       if (!auth || !auth.IdCliente) sessionStorage.removeItem("auth");
       try {
         const result = await fetch(
-          `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+          `${process.env.REACT_APP_BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
         if (result.status !== 200) {
           if (result.status === 401) {

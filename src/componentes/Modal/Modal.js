@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { BASE_URL } from "../../BaseURL.json";
 import "./Modal.css";
 const Modal = ({ isOpen, onClose, producto }) => {
   const medidaDefault = producto.Medidas ? producto.Medidas[0].IdMedida : 0;
@@ -15,7 +14,7 @@ const Modal = ({ isOpen, onClose, producto }) => {
     const pedirFoto = async (idProducto) => {
       try {
         const result = await fetch(
-          `${BASE_URL}iProductosSP/Foto?idProducto=${idProducto}`
+          `${process.env.REACT_APP_BASE_URL}iProductosSP/Foto?idProducto=${idProducto}`
         );
         if (result.status !== 200) {
           throw new Error("error al obtener la foto " + result.text());

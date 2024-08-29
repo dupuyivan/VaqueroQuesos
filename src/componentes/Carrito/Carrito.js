@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { ModalCarrito } from "..";
-import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./Carrito.css";
 const Carrito = () => {
@@ -55,7 +54,7 @@ const Carrito = () => {
 
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/Guardar?pUsuario=${user.usuario}&pToken=${user.Token}`,
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/Guardar?pUsuario=${user.usuario}&pToken=${user.Token}`,
         {
           method: "POST",
           headers: {

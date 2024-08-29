@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import "./CargaProductos.css";
 import "./AddOrEdit.css";
 import { BsCaretDown, BsCaretUp } from "react-icons/bs";
@@ -86,7 +85,7 @@ const CargaProductos = ({ idPermiso }) => {
         return push("/");
 
       const result = await fetch(
-        `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        `${process.env.REACT_APP_BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
 
       if (result.status !== 200) {
@@ -263,7 +262,7 @@ const AddOrEdit = ({
 
     try {
       const resultado = await fetch(
-        `${BASE_URL}iMedidasSP/MedidasDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        `${process.env.REACT_APP_BASE_URL}iMedidasSP/MedidasDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
 
       if (resultado.status !== 200) {
@@ -288,7 +287,7 @@ const AddOrEdit = ({
     try {
       const reader = new FileReader();
       const result = await fetch(
-        `${BASE_URL}iProductosSP/Foto?idProducto=${productoSeleccionado.IdProducto}`
+        `${process.env.REACT_APP_BASE_URL}iProductosSP/Foto?idProducto=${productoSeleccionado.IdProducto}`
       );
       const json = await result.json();
       const aver = await fetch(`data:image/png;base64,${json.Foto}`);
@@ -386,7 +385,7 @@ const AddOrEdit = ({
       });
 
       const result = await fetch(
-        `${BASE_URL}iProductosSP/Guardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
+        `${process.env.REACT_APP_BASE_URL}iProductosSP/Guardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
         {
           method: "POST",
           headers: {

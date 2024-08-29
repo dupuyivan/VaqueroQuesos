@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import "./Login.css";
-import { BASE_URL } from "../../BaseURL.json";
 
 const Login = ({ logo, LogSucces }) => {
   const history = useHistory();
@@ -25,7 +24,7 @@ const Login = ({ logo, LogSucces }) => {
   const pedirListaClientes = async (auth) => {
     try {
       const result = await fetch(
-        `${BASE_URL}iClientesSP/ClientesDelVendedor?pUsuario=${auth.usuario}&pToken=${auth.Token}&pVendedor=${auth.IdCliente}`
+        `${process.env.REACT_APP_BASE_URL}iClientesSP/ClientesDelVendedor?pUsuario=${auth.usuario}&pToken=${auth.Token}&pVendedor=${auth.IdCliente}`
       );
       if (result.status !== 200) {
         throw new Error(result.message);
@@ -67,7 +66,7 @@ const Login = ({ logo, LogSucces }) => {
     const { target } = e;
     setLoading(true);
     fetch(
-      `${BASE_URL}iClientesSP/ValidarCliente?pUsuario=${target[0].value}&pContrasenia=${target[1].value}`
+      `${process.env.REACT_APP_BASE_URL}iClientesSP/ValidarCliente?pUsuario=${target[0].value}&pContrasenia=${target[1].value}`
     )
       .then((result) => {
         if (result.status !== 200) {

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./Pedidos.css";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 
 /* Procesamiento del pedio para poder armar las tablas,
   recibe los datos crudos y devuelve los datos con la estructura necesaria.
@@ -140,7 +139,7 @@ const Pedidos = ({ idPermiso }) => {
 
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/PedidosPendientes?pUsuario=${usuario}&pToken=${Token}`
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/PedidosPendientes?pUsuario=${usuario}&pToken=${Token}`
       );
 
       if (result.status !== 200) {
@@ -176,7 +175,7 @@ const Pedidos = ({ idPermiso }) => {
     };
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/APrepararGuardar?pUsuario=${usuario}&pToken=${Token}&pIdClienteRegistro=${IdCliente}`,
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/APrepararGuardar?pUsuario=${usuario}&pToken=${Token}&pIdClienteRegistro=${IdCliente}`,
         {
           method: "POST",
           headers: {

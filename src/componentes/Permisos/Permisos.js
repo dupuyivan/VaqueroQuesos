@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import { Iconos } from "../Dashboard/Dashboard";
 import "./Permisos.css";
 
@@ -23,7 +22,7 @@ const Permisos = ({ idPermiso }) => {
     if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
       return push("/");
     const result = await fetch(
-      `${BASE_URL}iMenusSP/MenusDatos?pUsuario=${usuario}&pToken=${Token}`
+      `${process.env.REACT_APP_BASE_URL}iMenusSP/MenusDatos?pUsuario=${usuario}&pToken=${Token}`
     );
 
     if (result.status !== 200) {
@@ -54,7 +53,7 @@ const Permisos = ({ idPermiso }) => {
 
     try {
       const result = await fetch(
-        `${BASE_URL}iClientesSP/ClientesDatos?pUsuario=${usuario}&pToken=${Token}`
+        `${process.env.REACT_APP_BASE_URL}iClientesSP/ClientesDatos?pUsuario=${usuario}&pToken=${Token}`
       );
       const json = await result.json();
       setListaClientes(json.filter(({ TipoCliente }) => TipoCliente === "S"));
@@ -68,7 +67,7 @@ const Permisos = ({ idPermiso }) => {
     try {
       if (clienteSeleccionado === 0) return;
       const result = await fetch(
-        `${BASE_URL}iMenusSP/Permisos?pUsuario=${usuario}&pToken=${Token}&pIdCliente=${clienteSeleccionado}`
+        `${process.env.REACT_APP_BASE_URL}iMenusSP/Permisos?pUsuario=${usuario}&pToken=${Token}&pIdCliente=${clienteSeleccionado}`
       );
       const json = await result.json();
       setPermisosClienteSeleccionado(json);
@@ -84,7 +83,7 @@ const Permisos = ({ idPermiso }) => {
     /* iMenusSP/Guardar?pUsuario={pUsuario}&pToken={pToken}&pIdCliente={pIdCliente} */
     try {
       await fetch(
-        `${BASE_URL}iMenusSP/Guardar?pUsuario=${usuario}&pToken=${Token}&pIdCliente=${clienteSeleccionado}`,
+        `${process.env.REACT_APP_BASE_URL}iMenusSP/Guardar?pUsuario=${usuario}&pToken=${Token}&pIdCliente=${clienteSeleccionado}`,
         {
           method: "POST",
           headers: {

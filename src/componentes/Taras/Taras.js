@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router";
 import useModal from "../../hooks/useModal";
@@ -44,7 +43,7 @@ const Taras = () => {
     try {
       //pido los datos.
       const result = await fetch(
-        `${BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        `${process.env.REACT_APP_BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
       //compruebo el estado de la petcion
       if (result.status !== 200) {
@@ -94,7 +93,7 @@ const Taras = () => {
     }
     try {
       const result = await fetch(
-        `${BASE_URL}iElemTaraSP/Borrar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdElemTara=${tara.IdElemTara}`,
+        `${process.env.REACT_APP_BASE_URL}iElemTaraSP/Borrar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdElemTara=${tara.IdElemTara}`,
         {
           method: "POST",
         }
@@ -272,7 +271,7 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
     try {
       setIsLoading(true);
       const result = await fetch(
-        `${BASE_URL}iElemTaraSP/Guardar?pUsuario=${auth.usuario}&pToken=${
+        `${process.env.REACT_APP_BASE_URL}iElemTaraSP/Guardar?pUsuario=${auth.usuario}&pToken=${
           auth.Token
         }&pIdElemTara=${Tara ? Tara.IdElemTara : 0}&pDescripcion=${
           inputs.descripcion

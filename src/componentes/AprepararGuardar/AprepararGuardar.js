@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import ModoPreparar from "./ModoPreparar";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./AprepararGuardar.css";
 import { useLocation } from "react-router-dom";
@@ -97,7 +96,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   const imprimirPesaje = async (pedido, usuario, Token) => {
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedido}`
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedido}`
       );
 
       const pdf = await result.json();
@@ -114,7 +113,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
     const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/PrepararGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdClienteRegistro=${auth.IdCliente}`,
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/PrepararGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdClienteRegistro=${auth.IdCliente}`,
         {
           method: "POST",
           headers: {
@@ -349,7 +348,7 @@ const ModalEliminar = ({ isOpen, onClose, pedido, cerrar }) => {
     const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/Eliminar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pPedido=${pedidoEliminar.IdPedido}`,
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/Eliminar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pPedido=${pedidoEliminar.IdPedido}`,
         {
           method: "POST",
           headers: {

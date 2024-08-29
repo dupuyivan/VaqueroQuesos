@@ -12,7 +12,6 @@ import {
 import { Route, Switch, useHistory, Link } from "react-router-dom";
 import "./Dashboard.css";
 import Taras from "../Taras/Taras";
-import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
 import Consulta from "../Confirmados/Confirmados";
 
@@ -35,7 +34,7 @@ const Dashboard = () => {
   const traerPermisos = async (auth) => {
     try {
       const result = await fetch(
-        `${BASE_URL}iMenusSP/Permisos?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdCliente=${auth.IdCliente}`
+        `${process.env.REACT_APP_BASE_URL}iMenusSP/Permisos?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdCliente=${auth.IdCliente}`
       );
       if (result.status !== 200) {
         toast.error("se produjo un error.");
@@ -130,7 +129,7 @@ const ActualizarClientes = ({ idPermiso }) => {
       return push("/");
     setIsLoading(true);
     try {
-      await fetch(`${BASE_URL}Finnegans/procesarClientes`);
+      await fetch(`${process.env.REACT_APP_BASE_URL}Finnegans/procesarClientes`);
       toast.success("Clientes Actualizados con exito.");
       push("/Dashboard");
     } catch (err) {

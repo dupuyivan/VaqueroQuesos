@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { BASE_URL } from "../BaseURL.json";
 import { useHistory } from "react-router";
 import React from "react";
 import { toast } from "react-toastify";
@@ -75,7 +74,7 @@ export const GetPedidosProvider = ({ children }) => {
 
       try {
         const result = await fetch(
-          `${BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
+          `${process.env.REACT_APP_BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
         );
 
         /* si la api devuelve un estado difetente a ok compruebo que el error no sea de auth */
@@ -107,7 +106,7 @@ export const GetPedidosProvider = ({ children }) => {
 
       try {
         const result = await fetch(
-          `${BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
+          `${process.env.REACT_APP_BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
         );
 
         /* si la api devuelve un estado difetente a ok compruebo que el error no sea de auth */

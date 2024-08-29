@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { BASE_URL } from "../../BaseURL.json";
 
 const calcularTara = (tara) => {
   let tarasTemp = tara;
@@ -118,7 +117,7 @@ const ModoPesar = ({
     let tarasTemp = [];
     try {
       const result = await fetch(
-        `${BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${user.usuario}&pToken=${user.Token}`
+        `${process.env.REACT_APP_BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${user.usuario}&pToken=${user.Token}`
       );
       if (result.status !== 200) {
         throw new Error(result.text);
@@ -182,7 +181,7 @@ const ModoPesar = ({
       try {
         const auth = JSON.parse(sessionStorage.getItem("auth"));
         const result = await fetch(
-          `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+          `${process.env.REACT_APP_BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
 
         if (result.status !== 200) {

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import ModoPesar from "./ModoPesar";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const calcularTara = (tara) => {
@@ -37,7 +36,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     try {
       const auth = JSON.parse(sessionStorage.getItem("auth"));
       const result = await fetch(
-        `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        `${process.env.REACT_APP_BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
 
       if (result.status !== 200) {
@@ -57,7 +56,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     try {
       const auth = JSON.parse(sessionStorage.getItem("auth"));
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/datosPesosProvisorios?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/datosPesosProvisorios?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
       if (result.status !== 200) {
         if (result.status === 401) return push("/");
@@ -77,7 +76,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/PrepararProvisorioGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdClienteRegistro=${pedido.IdCliente}`,
+        `${process.env.REACT_APP_BASE_URL}iPedidosSP/PrepararProvisorioGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdClienteRegistro=${pedido.IdCliente}`,
         {
           method: "POST",
           body: JSON.stringify(obj),
@@ -221,7 +220,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     let tarasTemp = [];
     try {
       const result = await fetch(
-        `${BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${user.usuario}&pToken=${user.Token}`
+        `${process.env.REACT_APP_BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${user.usuario}&pToken=${user.Token}`
       );
       if (result.status !== 200) {
         throw new Error(result.text);
