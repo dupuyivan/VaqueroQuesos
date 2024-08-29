@@ -9,7 +9,6 @@ import {
   useHistory,
 } from "react-router-dom";
 import { Login, Carrito, Lista, Dashboard } from "./componentes";
-import { logo } from "./logo.json";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { GetPedidosProvider } from "./context/GetPedidos";
@@ -58,7 +57,7 @@ function App() {
             <Logout />
           </Route>
           <Route exact path="/">
-            <Login LogSucces={LogSucces} logo={logo} />
+            <Login LogSucces={LogSucces} />
           </Route>
           <Redirect to="/" />
         </Switch>
@@ -91,7 +90,7 @@ const BasePage = ({ children, titulo, usuario = {}, LogSucces }) => {
         )}
       </div>
       <div className="contenedor__landing">
-        <img src={logo} alt="Logo Vaquero" />
+        <img src='/assets/images/logo/vaquero_quesos.jpg' alt="Logo Vaquero" />
 
         <div className="contenedor__titulo">
           <h2>{titulo}</h2>

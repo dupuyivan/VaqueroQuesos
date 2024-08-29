@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import "./Login.css";
 
-const Login = ({ logo, LogSucces }) => {
+const Login = ({ LogSucces }) => {
   const history = useHistory();
   const [error, setError] = useState();
   const [isLoading, setLoading] = useState(false);
@@ -93,7 +93,7 @@ const Login = ({ logo, LogSucces }) => {
 
   return (
     <div className="container">
-      <img src={logo} alt="Logo Vaquero" />
+      <img src='/assets/images/logo/vaquero_quesos.jpg' alt="Logo Vaquero" />
       <hr />
       {isVendedor ? (
         <SelecionCliente clientes={clientes} LogSucces={LogSucces} />
