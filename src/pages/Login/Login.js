@@ -8,12 +8,14 @@ const Login = ({ LogSucces }) => {
   const [isLoading, setLoading] = useState(false);
   const [isVendedor, setIsVendedor] = useState(false);
   const [clientes, setClientes] = useState([]);
+
   useEffect(() => {
     const auth = JSON.parse(sessionStorage.getItem("auth"));
     const tipo = {
       C: () => history.push("/Lista"),
       V: () => {
-        setIsVendedor(true);
+          history.push("/Lista"),
+        // setIsVendedor(true);
         pedirListaClientes(auth);
       },
       S: () => history.push("/Dashboard"),
@@ -64,7 +66,9 @@ const Login = ({ LogSucces }) => {
     };
     
     const { target } = e;
+
     setLoading(true);
+
     fetch(
       `${process.env.REACT_APP_BASE_URL}iClientesSP/ValidarCliente?pUsuario=${target[0].value}&pContrasenia=${target[1].value}`
     )
@@ -129,63 +133,4 @@ const Login = ({ LogSucces }) => {
   );
 };
 
-const SelecionCliente = ({ clientes, LogSucces }) => {
-  const history = useHistory();
-  const [clienteSeleccionado, setClienteSeleccionado] = useState(0);
-  const [clientesFiltrados, setClientesFiltrados] = useState(clientes);
-  const handleClick = (e) => {
-    const Cliente = clientesFiltrados[clienteSeleccionado];
-    sessionStorage.removeItem("auth");
-    sessionStorage.setItem("auth", JSON.stringify({ ...Cliente }));
-    LogSucces();
-    history.push("/Lista");
-  };
-  const filtrarPedidoPorCliente = (value, clientes) => {
-    return clientes.filter((cliente) =>
-      cliente.Nombre.toLowerCase().includes(value.toLowerCase())
-    );
-  };
-  const filtrar = (value, pedidos) => {
-    return filtrarPedidoPorCliente(value, pedidos);
-  };
-  const handleChangeFiltro = (e) => {
-    const resultado = filtrar(e.target.value, clientes);
-    if (!resultado) return;
-    setClientesFiltrados(resultado);
-  };
-  const handleChangeSelect = (e) => {
-    const { value } = e.target;
-    setClienteSeleccionado(value);
-  };
-  useEffect(() => {
-    setClientesFiltrados(clientes);
-  }, [clientes]);
-  return (
-    <>
-      <div className="container">
-        <input
-          type="text"
-          className="inputLogin"
-          placeholder="Filtro"
-          onChange={handleChangeFiltro}
-        />
-        <small>Seleccione un usuario para continuar.</small>
-        <select
-          className="usuario"
-          value={clienteSeleccionado}
-          onChange={handleChangeSelect}
-        >
-          {clientesFiltrados.map((cliente, i) => (
-            <option value={i} key={i}>
-              {cliente.Nombre}
-            </option>
-          ))}
-        </select>
-        <button className="button" onClick={handleClick}>
-          Seleccionar
-        </button>
-      </div>
-    </>
-  );
-};
 export default Login;
