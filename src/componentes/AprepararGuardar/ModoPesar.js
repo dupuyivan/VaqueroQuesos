@@ -304,7 +304,7 @@ const ModoPesar = ({
             <label htmlFor="piezas">Piezas Totales</label>
             <div className="piezas-input-boton">
               <input
-                formnovalidate
+                formNoValidate
                 min={0}
                 type="text"
                 name="piezas"
@@ -325,7 +325,7 @@ const ModoPesar = ({
           <div className="flex-input bruto-input">
             <label htmlFor="bruto">Peso Bruto</label>
             <input
-              formnovalidate
+              formNoValidate
               type="text"
               name="bruto"
               id="bruto"
@@ -346,7 +346,7 @@ const ModoPesar = ({
             <div className="tara-input">
               <label htmlFor="tara">Tara</label>
               <input
-                formnovalidate
+                formNoValidate
                 type="text"
                 name="tara"
                 id="tara"
@@ -362,7 +362,7 @@ const ModoPesar = ({
           <div className="flex-input neto-input">
             <label htmlFor="neto">Peso Neto</label>
             <input
-              formnovalidate
+              formNoValidate
               disabled
               type="text"
               name="neto"
@@ -373,7 +373,7 @@ const ModoPesar = ({
           <div className="flex-input pesoPieza-input">
             <label htmlFor="pesoPieza">Peso por Pieza</label>
             <input
-              formnovalidate
+              formNoValidate
               disabled
               type="text"
               name="pesoPieza"
