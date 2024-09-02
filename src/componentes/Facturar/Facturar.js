@@ -155,8 +155,6 @@ const Facturar = ({ idPermiso }) => {
 
         const PedidosAFacturarProcesados = ProcesarPedidosAFacturar(json);
 
-        console.debug('PedidosAFacturarProcesados', PedidosAFacturarProcesados)
-
         setPedidosAFacturar(PedidosAFacturarProcesados);
       } catch (err) {
         toast.error("ha ocurrido un error");

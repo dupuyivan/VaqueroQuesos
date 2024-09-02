@@ -13,34 +13,166 @@ const calcularTara = (tara) => {
   return tarasTemp;
 };
 
-const ModoPesar = ({
-  producto,
-  onGuardar,
-  onCancelar,
-  pedirData,
-  pesajeProvisorio,
-}) => {
+const ModoPesar = ({ producto, onGuardar, onCancelar, pesajeProvisorio, }) => {
   const [prodData, setProdData] = useState({});
+  const [taras, setTaras] = useState([]);
+  const [editPiezas, setEditPiezas] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [units, setUnits] = useState(producto.Cantidad)
   const [pesaje, setPesaje] = useState({
     TaraTotal: 0,
     PesoNeto: 0,
     PesoPorPieza: 0,
     PesoBruto: 0,
     Taras: null,
-    producto: producto,
   });
-  const [taras, setTaras] = useState([]);
-  const [editPiezas, setEditPiezas] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const { push } = useHistory();
 
+  useEffect(() => {
+
+    const obtenerPedidos = async (prod) => {
+      try {
+        const auth = JSON.parse(sessionStorage.getItem("auth"));
+        const result = await fetch(
+          `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        );
+
+        if (result.status !== 200) {
+          if (result.status === 401) return push("/");
+          throw new Error("error al obtener los pedidos");
+        }
+
+        await pedirTaras()
+
+        const json = await result.json();
+        const prodData = json.find(({ Codigo }) => prod.Codigo === Codigo)
+
+        setProdData(prodData);
+      } catch (err) {
+        console.error(err);
+        toast.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    obtenerPedidos(producto);
+    
+    //eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    try {
+
+      if (pesajeProvisorio) {
+
+        const tarasProvisorio = taras.map((itemTara) => {
+
+          const elemProvisorio = pesajeProvisorio.Tara.find(({ IdElemTara }) => IdElemTara === itemTara.IdElemTara );
+
+          itemTara.cantidad = elemProvisorio.Cantidad;
+
+          itemTara.Peso = elemProvisorio.Peso;
+
+          itemTara.subTotal = elemProvisorio.Cantidad * elemProvisorio.Peso;
+
+          return itemTara;
+        });
+
+        const productoCantidad = pesajeProvisorio.Cantidad;
+
+        const pesoBruto = pesajeProvisorio.PesoBruto;
+
+        const pesajesProvisoriosFijos = {
+          TaraTotal: 0,
+          PesoBruto: pesoBruto,
+          Taras: tarasProvisorio,
+        };
+
+        const taraFinal = calcularTara(pesajesProvisoriosFijos);
+        
+        if (prodData.EsPesoFijo) {
+          const pesoPromedio = prodData.PesoPromedio;
+
+          const pesoNeto = productoCantidad * pesoPromedio;
+
+          taraFinal.PesoBruto = (pesoNeto + taraFinal.TaraTotal).toFixed(2);
+
+          taraFinal.PesoNeto = (
+            taraFinal.PesoBruto - taraFinal.TaraTotal
+          ).toFixed(2);
+
+          taraFinal.PesoPorPieza = (
+            taraFinal.PesoNeto / productoCantidad
+          ).toFixed(2);
+
+        } else {
+
+          if (taraFinal.PesoBruto !== 0) {
+
+            taraFinal.PesoNeto = (
+              taraFinal.PesoBruto - taraFinal.TaraTotal
+            ).toFixed(2);
+
+            taraFinal.PesoPorPieza = (
+              taraFinal.PesoNeto / productoCantidad
+            ).toFixed(2);
+
+          }
+        }
+
+        setPesaje(taraFinal);
+      } else {
+
+        const taraTotal = 0;
+        const tarasCopy = [...taras];
+
+        const productoCantidad = units;
+
+        if (prodData.EsPesoFijo) {
+
+          console.log("EsPesoFijo", prodData.EsPesoFijo);
+
+          const pesoPromedio = prodData.PesoPromedio;
+
+          const pesoNeto = productoCantidad * pesoPromedio;
+
+          setPesaje({
+            TaraTotal: taraTotal,
+            PesoBruto: pesoNeto.toFixed(2),
+            PesoNeto: pesoNeto.toFixed(2),
+            PesoPorPieza: pesoNeto.toFixed(2),
+            Taras: tarasCopy
+          });
+
+        } else {
+          
+          const result = {
+            TaraTotal: taraTotal,
+            PesoBruto: "0",
+            PesoNeto: "0",
+            PesoPorPieza: "0",
+            Taras: tarasCopy
+          }
+
+          setPesaje(result);
+        }
+        
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  }, [prodData, pesajeProvisorio, producto]);
+
   /* Manejadores de eventos */
   const handleChangeBruto = (e) => {
+    let { value } = e.target;
+
     const onlyNumber = /[A-Z]/gi;
     const onlyComma = /,/g;
 
-    const { value } = e.target;
     const valueWithoutLetters = value.replace(onlyNumber, "");
     const valueWithDot = valueWithoutLetters.replace(onlyComma, ".");
 
@@ -48,9 +180,10 @@ const ModoPesar = ({
   };
 
   const handlePiezasClick = () => {
-    if (!pesaje.producto.Cantidad) return;
+    if(units === '' || units === 0 || isNaN(units)) return
 
     setEditPiezas((prev) => !prev);
+    calcular({ ...pesaje })
   };
 
   const handleChangePiezas = (e) => {
@@ -61,19 +194,19 @@ const ModoPesar = ({
     const valorReemplazado = value
       .replace(soloNumeros, "")
       .replace(soloComa, ".");
+
     e.target.value = valorReemplazado;
 
-    const tempProd = {
-      ...pesaje.producto,
-      Cantidad: parseFloat(valorReemplazado),
-    };
+    const valueParsed = parseFloat(valorReemplazado)
 
-    calcular({ ...pesaje, producto: tempProd });
+    setUnits(valueParsed)
   };
 
   const handleChangePeso = (e, indice) => {
     const esNumero = /^[0-9]+([.])?([0-9]+)?$/;
+
     let taraTemp = pesaje.Taras;
+
     if (!e.target.value.trim().match(esNumero)) {
       e.target.value = "<br/>";
       taraTemp[indice].Peso = 0;
@@ -81,8 +214,10 @@ const ModoPesar = ({
       calcular({ ...pesaje, Taras: taraTemp });
       return;
     }
+
     taraTemp[indice].subTotal =
       parseFloat(e.target.value) * parseFloat(taraTemp[indice].cantidad);
+
     taraTemp[indice].Peso = parseFloat(e.target.value);
 
     calcular({
@@ -111,6 +246,14 @@ const ModoPesar = ({
       Taras: taraTemp,
     });
   };
+
+  const handleOnGuardar = () => {
+    onGuardar(pesaje, units, producto)
+  }
+
+  const handleDisableOnguardar = () => {
+    return editPiezas || !(pesaje.PesoPorPieza > 0)
+  }
 
   /* funciones  */
   const pedirTaras = async () => {
@@ -145,157 +288,52 @@ const ModoPesar = ({
       const pesoBruto =
         taraFinal.TaraTotal !== 0
           ? (
-              taraFinal.producto.Cantidad * prodData.PesoPromedio +
+              units * prodData.PesoPromedio +
               taraFinal.TaraTotal
             ).toFixed(2)
-          : (taraFinal.producto.Cantidad * prodData.PesoPromedio).toFixed(2);
+          : (units * prodData.PesoPromedio).toFixed(2);
 
       const pesoNeto = (pesoBruto - taraFinal.TaraTotal).toFixed(2);
-      const pesoPorPieza = (pesoNeto / taraTemp.producto.Cantidad).toFixed(2);
+      const pesoPorPieza = (pesoNeto / units).toFixed(2);
 
-      setPesaje({
+      const pesajefinal = {
         ...taraFinal,
-        Cantidad: parseFloat(taraTemp?.producto.Cantidad),
+        Cantidad: parseFloat(units),
         PesoBruto: parseFloat(pesoBruto),
         PesoNeto: parseFloat(pesoNeto),
         PesoPorPieza: parseFloat(pesoPorPieza),
-      });
+      }
+
+      setPesaje(pesajefinal);
       return;
     }
 
     if (taraFinal.PesoBruto !== 0) {
       const pesoNeto = (taraFinal.PesoBruto - taraFinal.TaraTotal).toFixed(2);
-      const pesoPorPieza = (pesoNeto / taraTemp.producto.Cantidad).toFixed(2);
+      const pesoPorPieza = (pesoNeto / units).toFixed(2);
 
-      setPesaje({
+      const pesajeFinal = {
         ...taraFinal,
-        Cantidad: parseFloat(taraTemp?.producto.Cantidad),
+        Cantidad: parseFloat(units),
         PesoNeto: parseFloat(pesoNeto),
         PesoPorPieza: parseFloat(pesoPorPieza),
-      });
+      }
+
+      setPesaje(pesajeFinal);
       return;
     }
   };
 
-  useEffect(() => {
-    const obtenerPedidos = async (prod) => {
-      try {
-        const auth = JSON.parse(sessionStorage.getItem("auth"));
-        const result = await fetch(
-          `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
-        );
-
-        if (result.status !== 200) {
-          if (result.status === 401) return push("/");
-          throw new Error("error al obtener los pedidos");
-        }
-
-        const json = await result.json();
-        await pedirTaras();
-        setProdData(() => json.find(({ Codigo }) => prod.Codigo === Codigo));
-      } catch (err) {
-        console.error(err);
-        toast.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    obtenerPedidos(producto);
-    //eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    try {
-      if (pesajeProvisorio) {
-        const tarasProvisorio = taras.map((itemTara) => {
-          const elemProvisorio = pesajeProvisorio.Tara.find(
-            ({ IdElemTara }) => IdElemTara === itemTara.IdElemTara
-          );
-          itemTara.cantidad = elemProvisorio.Cantidad;
-          itemTara.Peso = elemProvisorio.Peso;
-          itemTara.subTotal = elemProvisorio.Cantidad * elemProvisorio.Peso;
-          return itemTara;
-        });
-        const productoCantidad = pesajeProvisorio.Cantidad;
-        const pesoBruto = pesajeProvisorio.PesoBruto;
-        const pesajesProvisoriosFijos = {
-          TaraTotal: 0,
-          PesoBruto: pesoBruto,
-          Taras: tarasProvisorio,
-          producto: {
-            ...producto,
-            Cantidad: productoCantidad,
-          },
-        };
-        const taraFinal = calcularTara(pesajesProvisoriosFijos);
-        if (prodData.EsPesoFijo) {
-          const pesoPromedio = prodData.PesoPromedio;
-          const pesoNeto = productoCantidad * pesoPromedio;
-          taraFinal.PesoBruto = (pesoNeto + taraFinal.TaraTotal).toFixed(2);
-          taraFinal.PesoNeto = (
-            taraFinal.PesoBruto - taraFinal.TaraTotal
-          ).toFixed(2);
-          taraFinal.PesoPorPieza = (
-            taraFinal.PesoNeto / productoCantidad
-          ).toFixed(2);
-        } else {
-          if (taraFinal.PesoBruto !== 0) {
-            taraFinal.PesoNeto = (
-              taraFinal.PesoBruto - taraFinal.TaraTotal
-            ).toFixed(2);
-            taraFinal.PesoPorPieza = (
-              taraFinal.PesoNeto / productoCantidad
-            ).toFixed(2);
-          }
-        }
-        setPesaje(taraFinal);
-      } else {
-        const taraTotal = 0;
-        const tarasCopy = [...taras];
-
-        const productoCantidad = producto.Cantidad;
-        if (prodData.EsPesoFijo) {
-          console.log("EsPesoFijo", prodData.EsPesoFijo);
-          const pesoPromedio = prodData.PesoPromedio;
-          const pesoNeto = productoCantidad * pesoPromedio;
-          setPesaje({
-            TaraTotal: taraTotal,
-            PesoBruto: pesoNeto.toFixed(2),
-            PesoNeto: pesoNeto.toFixed(2),
-            PesoPorPieza: pesoNeto.toFixed(2),
-            Taras: tarasCopy,
-            producto: {
-              ...producto,
-              Cantidad: productoCantidad,
-            },
-          });
-        } else {
-          setPesaje({
-            TaraTotal: taraTotal,
-            PesoBruto: "0",
-            PesoNeto: "0",
-            PesoPorPieza: "0",
-            Taras: tarasCopy,
-            producto: {
-              ...producto,
-              Cantidad: productoCantidad,
-            },
-          });
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-    }
-  }, [prodData, pesajeProvisorio, producto]);
 
   if (isLoading) return <div className="spin" />;
+
+
   return (
     <div className="contenedor-tabla">
       <div className="contenedor-cliente">
         <div className="datos">
-          <span>Codigo: {pesaje.producto.Codigo}</span>
-          <span>Presentacion: {pesaje.producto.Presentacion}</span>
+          <span>Codigo: {producto.Codigo}</span>
+          <span>Presentacion: {producto.Presentacion}</span>
         </div>
       </div>
       <div className="form-tabla">
@@ -310,10 +348,10 @@ const ModoPesar = ({
                 name="piezas"
                 id="piezas"
                 disabled={!editPiezas}
-                value={
-                  isNaN(pesaje?.producto?.Cantidad)
+                value={ 
+                  isNaN(units ?? producto.Cantidad)
                     ? " "
-                    : pesaje?.producto?.Cantidad
+                    : (units ?? producto.Cantidad)
                 }
                 onChange={handleChangePiezas}
               />
@@ -394,8 +432,8 @@ const ModoPesar = ({
               Cancelar
             </button>
             <button
-              disabled={!(pesaje.PesoPorPieza > 0)}
-              onClick={onGuardar(pesaje)}
+              disabled={handleDisableOnguardar()}
+              onClick={handleOnGuardar}
               className="boton-form"
             >
               Guardar

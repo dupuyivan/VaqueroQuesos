@@ -66,6 +66,7 @@ const ProcesarParaGuardar = (pedido) => {
         })) || [],
     })
   );
+
   return PedidoProcesado;
 };
 
@@ -109,9 +110,9 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   };
 
   /* Manejadores de Eventos  */
-  const handleGuardarPreparacion = async (e, pedido) => {
-    e.preventDefault();
+  const handleGuardarPreparacion = async (pedido) => {
     const pedidoProcesado = ProcesarParaGuardar(pedido);
+    
     const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
     try {
       const result = await fetch(

@@ -25,13 +25,117 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
   useEffect(() => {
     pedirTaras();
+    obtenerPesajesProvisorios();
   }, []);
 
   useEffect(() => {
-    obtenerPesajesProvisorios();
-    //eslint-disable-next-line
-  }, []);
+    if(!pesajesProvisorios?.ProductosPesados) return
 
+    pedidoApreparar.Productos.forEach((element, index) => {
+      let taraFinal = {};
+
+      const pesajeProvisorio = pesajesProvisorios?.ProductosPesados?.find(
+        ({ idPedidosProd }) => idPedidosProd === element.idPedidosProd
+      );
+
+      if (pesajeProvisorio) {
+
+        const tarasProvisorio = taras.map((itemTara) => {
+
+          const elemProvisorio = pesajeProvisorio.Tara.find( ({ IdElemTara, idPedidosProd }) =>
+                IdElemTara === itemTara.IdElemTara &&
+                element?.idPedidosProd === idPedidosProd
+          );
+
+          return {
+            ...itemTara,
+            cantidad: elemProvisorio?.Cantidad || "",
+            Peso: elemProvisorio?.Peso || "",
+            subTotal: elemProvisorio?.Cantidad * elemProvisorio?.Peso || ""
+          }
+        });
+
+        if (prodData.EsPesoFijo) {
+          element.Cantidad = pesajeProvisorio.Cantidad;
+          const pesajesProvisoriosFijos = {
+            TaraTotal: 0,
+            PesoNeto: parseFloat(
+              pesajeProvisorio.Cantidad * prodData.PesoPromedio
+            ).toFixed(2),
+            PesoPorPieza: parseFloat(
+              pesajeProvisorio.Cantidad * prodData.PesoPromedio
+            ).toFixed(2),
+            PesoBruto: pesajeProvisorio.PesoBruto,
+            Taras: tarasProvisorio,
+            producto: element,
+          };
+          taraFinal = calcularTara(pesajesProvisoriosFijos);
+
+          taraFinal.TaraTotal !== 0
+            ? (taraFinal.PesoBruto = parseFloat(
+                taraFinal.producto.Cantidad * prodData.PesoPromedio +
+                  taraFinal.TaraTotal
+              ).toFixed(2))
+            : (taraFinal.PesoBruto = parseFloat(
+                taraFinal.producto.Cantidad * prodData.PesoPromedio
+              ).toFixed(2));
+          taraFinal.PesoNeto = parseFloat(
+            taraFinal.PesoBruto - taraFinal.TaraTotal
+          ).toFixed(2);
+          taraFinal.PesoPorPieza = parseFloat(
+            taraFinal.PesoNeto / pesajesProvisoriosFijos.producto.Cantidad
+          ).toFixed(2);
+        } else {
+          
+          element.Cantidad = pesajeProvisorio.Cantidad;
+
+          const pesajesProvisoriosFijos = {
+            TaraTotal: 0,
+            PesoNeto: 0,
+            PesoPorPieza: 0,
+            PesoBruto: pesajeProvisorio.PesoBruto,
+            Taras: tarasProvisorio,
+            producto: element,
+          };
+          taraFinal = calcularTara(pesajesProvisoriosFijos);
+
+          if (taraFinal.PesoBruto !== 0) {
+            taraFinal.PesoNeto = parseFloat(
+              taraFinal.PesoBruto - taraFinal.TaraTotal
+            ).toFixed(2);
+            taraFinal.PesoPorPieza = parseFloat(
+              taraFinal.PesoNeto / pesajesProvisoriosFijos.producto.Cantidad
+            ).toFixed(2);
+          }
+        }
+        const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } =
+          taraFinal;
+        let ProductoPesado = pedidoApreparar.Productos;
+        if (ProductoPesado[index].idPedidosProd === element.idPedidosProd) {
+          ProductoPesado[index].Pesaje = {
+            PesoBruto,
+            Taras,
+            PesoPorPieza,
+            PesoNeto,
+          };
+
+          ProductoPesado[index].CantidadAnterior =
+            ProductoPesado[index].Cantidad;
+          ProductoPesado[index].Cantidad = producto.Cantidad;
+          if (
+            ProductoPesado[index].CantidadAnterior <=
+            ProductoPesado[index].Cantidad
+          ) {
+            ProductoPesado[index].NuevoPedido = false;
+            ProductoPesado[index].DesecharFaltante = false;
+          }
+
+          setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
+        }
+      }
+    });
+    //eslint-disable-next-line
+  }, [pesajesProvisorios, taras, prodData]);
 
   const obtenerPedidos = async (prod) => {
     try {
@@ -96,14 +200,68 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   };
 
   /* Manejadores de eventos */
-  const handlePesar = (productoApesar) => async (e) => {
+  const handlePesar = async (productId) => {
+    const product = pedido.Productos.find( product => product.idPedidosProd === productId )
+
     await obtenerPesajesProvisorios()
-    setProductoApesar(productoApesar);
-    obtenerPedidos(productoApesar);
+    await obtenerPedidos(product);
+    setProductoApesar(product);
   };
 
-  const handleGuardarPesaje = (pesaje) => async (e) => {
-    const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } = pesaje;
+  const handleGuardarPesaje = (pesaje, units, product) => {
+    const productIdx = pedidoApreparar.Productos.findIndex( product_ => product_.idPedidosProd === product.idPedidosProd)
+
+    const products = pedidoApreparar.Productos
+
+    products[productIdx].Pesaje = {
+      PesoBruto: pesaje.PesoBruto,
+      Taras: pesaje.Taras,
+      PesoPorPieza: pesaje.PesoPorPieza,
+      PesoNeto: pesaje.PesoNeto
+    }
+
+    products[productIdx].CantidadAnterior = product.Cantidad
+
+    products[productIdx].Cantidad = units
+    
+    if ( products[productIdx].CantidadAnterior <= products[productIdx].Cantidad ) {
+      products[productIdx].NuevoPedido = false;
+      products[productIdx].DesecharFaltante = false;
+    }
+
+    // no se que hace
+   /*  const cloneSaveData = [...saveDataNew];
+
+    cloneSaveData[productIdx] = true;
+
+    setSaveDataNew(cloneSaveData); */
+    // FIN no se que hace
+
+    pedidoApreparar.Productos = products
+
+    setPedidoApreparar(pedidoApreparar)
+
+    const saveProvisoriPesaje = {
+      idPedidosProd: products[productIdx].idPedidosProd,
+      idMedidaPrinc: products[productIdx].idMedidaPrinc,
+      Cantidad: products[productIdx].Cantidad,
+      PesoBruto: products[productIdx].Pesaje.PesoBruto,
+      Tara: products[productIdx].Pesaje.Taras.map((tara) => ({
+        $id: tara.$id,
+        idPedidosProd: tara.idPedidosProd,
+        IdElemTara: tara.IdElemTara,
+        Cantidad: tara.cantidad,
+        Peso: tara.Peso,
+      }))
+    }
+
+    console.debug('saveProvisoriPesaje', saveProvisoriPesaje)
+
+    handlePesajeProvisorio(saveProvisoriPesaje);
+    setProductoApesar(undefined);
+
+    // ---- /// ---- ///
+    /* const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } = pesaje;
 
     let ProductoPesado = pedidoApreparar.Productos;
 
@@ -114,8 +272,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       PesoNeto,
     };
 
-    ProductoPesado[producto.index].CantidadAnterior =
-      ProductoPesado[producto.index].Cantidad;
+    ProductoPesado[producto.index].CantidadAnterior = ProductoPesado[producto.index].Cantidad;
     ProductoPesado[producto.index].Cantidad = producto.Cantidad;
 
     if (
@@ -159,6 +316,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
     handlePesajeProvisorio(pesajeProvisorioFind[0]);
     setProductoApesar(undefined);
+ */
+
   };
 
   const handleEliminarPesaje = (index) => (e) => {
@@ -170,11 +329,11 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
     ProductoPesado[index].Cantidad = ProductoPesado[index].CantidadAnterior;
 
-    const cloneSaveData = [...saveDataNew];
+    /* const cloneSaveData = [...saveDataNew];
 
     cloneSaveData[index] = false;
 
-    setSaveDataNew(cloneSaveData);
+    setSaveDataNew(cloneSaveData); */
 
     setPedidoApreparar({
       ...pedidoApreparar,
@@ -201,17 +360,19 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
     setPedidoApreparar({ ...pedidoTemp });
 
-    const cloneSaveData = [...saveDataNew];
+    // no se que hace
+    /* const cloneSaveData = [...saveDataNew];
 
     cloneSaveData[indexProd] = true;
 
-    setSaveDataNew(cloneSaveData);
+    setSaveDataNew(cloneSaveData); */
   };
 
   const handleCancelarPesaje = (e) => {
-    const cloneSaveData = [...saveDataNew];
+    // no se que hace
+    /* const cloneSaveData = [...saveDataNew];
     cloneSaveData[productoApesar.index] = false;
-    setSaveDataNew(cloneSaveData);
+    setSaveDataNew(cloneSaveData); */
 
     setProductoApesar(null);
   };
@@ -250,105 +411,10 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     return !allProducsMeetsConditions
   };
 
-  useEffect(() => {
-    pedidoApreparar.Productos.forEach((element, index) => {
-      let taraFinal = {};
-
-      const pesajeProvisorio =
-        pesajesProvisorios.ProductosPesados &&
-        pesajesProvisorios.ProductosPesados.find(
-          ({ idPedidosProd }) => idPedidosProd === element.idPedidosProd
-        );
-      if (pesajeProvisorio) {
-        const tarasProvisorio = taras.map((itemTara) => {
-          const elemProvisorio = pesajeProvisorio.Tara.find(
-            ({ IdElemTara, idPedidosProd }) =>
-              IdElemTara === itemTara.IdElemTara &&
-              element?.idPedidosProd === idPedidosProd
-          );
-          itemTara.cantidad = elemProvisorio?.Cantidad || "";
-          itemTara.Peso = elemProvisorio?.Peso || "";
-          itemTara.subTotal =
-            elemProvisorio?.Cantidad * elemProvisorio?.Peso || "";
-          return itemTara;
-        });
-        if (prodData.EsPesoFijo) {
-          element.Cantidad = pesajeProvisorio.Cantidad;
-          const pesajesProvisoriosFijos = {
-            TaraTotal: 0,
-            PesoNeto: parseFloat(
-              pesajeProvisorio.Cantidad * prodData.PesoPromedio
-            ).toFixed(2),
-            PesoPorPieza: parseFloat(
-              pesajeProvisorio.Cantidad * prodData.PesoPromedio
-            ).toFixed(2),
-            PesoBruto: pesajeProvisorio.PesoBruto,
-            Taras: tarasProvisorio,
-            producto: element,
-          };
-          taraFinal = calcularTara(pesajesProvisoriosFijos);
-
-          taraFinal.TaraTotal !== 0
-            ? (taraFinal.PesoBruto = parseFloat(
-                taraFinal.producto.Cantidad * prodData.PesoPromedio +
-                  taraFinal.TaraTotal
-              ).toFixed(2))
-            : (taraFinal.PesoBruto = parseFloat(
-                taraFinal.producto.Cantidad * prodData.PesoPromedio
-              ).toFixed(2));
-          taraFinal.PesoNeto = parseFloat(
-            taraFinal.PesoBruto - taraFinal.TaraTotal
-          ).toFixed(2);
-          taraFinal.PesoPorPieza = parseFloat(
-            taraFinal.PesoNeto / pesajesProvisoriosFijos.producto.Cantidad
-          ).toFixed(2);
-        } else {
-          element.Cantidad = pesajeProvisorio.Cantidad;
-          const pesajesProvisoriosFijos = {
-            TaraTotal: 0,
-            PesoNeto: 0,
-            PesoPorPieza: 0,
-            PesoBruto: pesajeProvisorio.PesoBruto,
-            Taras: tarasProvisorio,
-            producto: element,
-          };
-          taraFinal = calcularTara(pesajesProvisoriosFijos);
-          if (taraFinal.PesoBruto !== 0) {
-            taraFinal.PesoNeto = parseFloat(
-              taraFinal.PesoBruto - taraFinal.TaraTotal
-            ).toFixed(2);
-            taraFinal.PesoPorPieza = parseFloat(
-              taraFinal.PesoNeto / pesajesProvisoriosFijos.producto.Cantidad
-            ).toFixed(2);
-          }
-        }
-        const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } =
-          taraFinal;
-        let ProductoPesado = pedidoApreparar.Productos;
-        if (ProductoPesado[index].idPedidosProd === element.idPedidosProd) {
-          ProductoPesado[index].Pesaje = {
-            PesoBruto,
-            Taras,
-            PesoPorPieza,
-            PesoNeto,
-          };
-          ProductoPesado[index].CantidadAnterior =
-            ProductoPesado[index].Cantidad;
-          ProductoPesado[index].Cantidad = producto.Cantidad;
-          if (
-            ProductoPesado[index].CantidadAnterior <=
-            ProductoPesado[index].Cantidad
-          ) {
-            ProductoPesado[index].NuevoPedido = false;
-            ProductoPesado[index].DesecharFaltante = false;
-          }
-
-          setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
-        }
-      }
-    });
-    //eslint-disable-next-line
-  }, [pesajesProvisorios, taras, prodData]);
+ const handleOnGuargar = (e) => {
+  e.preventDefault();
+  onGuardar(pedidoApreparar)
+ }
 
   return !productoApesar ? (    
     <div className="contenedor-tabla">      
@@ -379,7 +445,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
           </button>
           <button
             type="submit"
-            onClick={(e) => onGuardar(e, pedidoApreparar)}
+            onClick={handleOnGuargar}
             className="btn"
             disabled={validateButtonSave()}
           >
@@ -412,6 +478,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                 NuevoPedido,
                 DesecharFaltante,
                 CantidadAnterior,
+                idPedidosProd
               },
               indexProd
             ) => (
@@ -452,10 +519,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                       </button>
                     </div>
                     <button
-                        onClick={handlePesar({
-                          ...pedidoApreparar.Productos[indexProd],
-                          index: indexProd,
-                        })}
+                        onClick={() => handlePesar(idPedidosProd) }
                         className="boton pesaje"
                       >
                         Pesar
