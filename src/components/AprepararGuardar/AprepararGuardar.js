@@ -143,7 +143,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   };
 
   useEffect(() => {
-    pedidosPendientes.sort( (pedidoA, pedidoB) => pedidoA.Pedido - pedidoB.Pedido )
+    pedidosPendientes.sort( (pedidoA, pedidoB) => pedidoB.Pedido - pedidoA.Pedido )
     setPedidosFiltrados(pedidosPendientes);
   }, [pedidosPendientes]);
 
