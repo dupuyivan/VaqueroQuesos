@@ -2,4 +2,5 @@
 * V1.1.0: Feature: Se muestra el pesaje guardado de cada producto
           Feature: Se cambia el texto del boton "Enviar a facturacion" y se agrega validacion para que no permita enviar con productos sin pesar
           Feature: Se muestra la observacion del que pesa en facturacion
+          FIX: Se arregla bug que enviaba todas las taras iguales
 * V1.0.0: Inicio de proyecto
