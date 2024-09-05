@@ -57,6 +57,19 @@ const ProcesarPedido = (pedidos) => {
   return pedidosProcesados;
 };
 
+const getAuth = async () => new Promise((resolve,reject) => {
+  let auth = JSON.parse(sessionStorage.getItem("auth") || {})
+
+  const id = setInterval(() => {
+    auth = JSON.parse(sessionStorage.getItem("auth") || {})
+    
+    if(!auth.permisos) return
+
+    resolve(auth)
+    clearInterval(id)
+  }, 500)
+})
+
 export const GetPedidosProvider = ({ children }) => {
   const [pedidosPendientes, setPedidosPendientes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,8 +81,8 @@ export const GetPedidosProvider = ({ children }) => {
   const pedirPedidosAPreparar = async () => {
     let pedidosProcesados = [];
 
-    const { usuario, Token, permisos } =
-      JSON.parse(sessionStorage.getItem("auth")) || {};
+    const { usuario, Token, permisos } = await getAuth();
+
     if (permisos) {
       if (!Token || !permisos.some(({ IdMenu }) => IdMenu === 2)) return;
 
@@ -100,8 +113,9 @@ export const GetPedidosProvider = ({ children }) => {
     }
   };
   const pedirPedidosAPrepararComparar = async () => {
-    const { usuario, Token, permisos } =
-      JSON.parse(sessionStorage.getItem("auth")) || {};
+    console.debug('pedirPedidosAPrepararComparar')
+
+    const { usuario, Token, permisos } = await getAuth();
     if (permisos) {
       if (!Token || !permisos.some(({ IdMenu }) => IdMenu === 2)) return;
 
@@ -133,7 +147,7 @@ export const GetPedidosProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => pedirPedidosAPrepararComparar(), 10000);
+    const interval = setInterval(() => pedirPedidosAPrepararComparar(), 2 * 60 * 1000);
     return () => {
       clearInterval(interval);
     };
