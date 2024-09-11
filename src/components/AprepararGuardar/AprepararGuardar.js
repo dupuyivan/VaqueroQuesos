@@ -134,7 +134,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
       }
 
       toast.success("Pedido guardado con exito");
-      await imprimirPesaje(pedidoProcesado.Numero, auth.usuario, auth.Token);
+      // await imprimirPesaje(pedidoProcesado.Numero, auth.usuario, auth.Token);
       volverAlListado();
     } catch (err) {
       toast.error("se ha producido un error");
@@ -290,6 +290,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
               pedido={pedidoSeleccionado}
               salir={handlePrepararCerrar}
               onGuardar={handleGuardarPreparacion}
+              pedidoOrig={JSON.parse(JSON.stringify(pedidoSeleccionado))}
             />
           )
         ) : (

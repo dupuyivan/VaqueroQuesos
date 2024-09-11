@@ -113,8 +113,6 @@ export const GetPedidosProvider = ({ children }) => {
     }
   };
   const pedirPedidosAPrepararComparar = async () => {
-    console.debug('pedirPedidosAPrepararComparar')
-
     const { usuario, Token, permisos } = await getAuth();
     if (permisos) {
       if (!Token || !permisos.some(({ IdMenu }) => IdMenu === 2)) return;

@@ -13,13 +13,12 @@ const calcularTara = (tara) => {
   return tarasTemp;
 };
 
-const ModoPreparar = ({ pedido, salir, onGuardar }) => {
+const ModoPreparar = ({ pedido, salir, onGuardar, pedidoOrig }) => {
   const [pedidoApreparar, setPedidoApreparar] = useState(pedido);
   const [productoApesar, setProductoApesar] = useState();
-  const [prodData, setProdData] = useState({});
+  const [productsDetails, setProducDetails] = useState([]);
   const [taras, setTaras] = useState([]);
-  const [pesajesProvisorios, setPesajesProvisorios] = useState([]);
-  const [saveDataNew, setSaveDataNew] = useState([]);
+  const [pesajesProvisorios, setPesajesProvisorios] = useState({});
 
   const { push } = useHistory();
 
@@ -28,44 +27,46 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   }, []);
 
   useEffect(() => {
-    if(!pesajesProvisorios?.ProductosPesados) return
+    if(!productsDetails?.length && !taras.length) return
 
-    pedidoApreparar.Productos.forEach((element, index) => {
+    pedido.Productos.forEach((element, index) => {
+      const prodDetails = productsDetails.find( productDetail => productDetail.Codigo === element.Codigo)
+
       let taraFinal = {};
 
       const pesajeProvisorio = pesajesProvisorios?.ProductosPesados?.find(
         ({ idPedidosProd }) => idPedidosProd === element.idPedidosProd
       );
+     
+      element.CantidadAnterior = element.Cantidad
+      element.Cantidad = pesajeProvisorio?.Cantidad || element.Cantidad;
 
       if (!pesajeProvisorio) return 
 
-        const tarasProvisorio = taras.map((itemTara) => {
+      const tarasProvisorio = taras.map((itemTara) => {
 
-          const elemProvisorio = pesajeProvisorio.Tara.find( ({ IdElemTara, idPedidosProd }) =>
-                IdElemTara === itemTara.IdElemTara &&
-                element?.idPedidosProd === idPedidosProd
-          );
+        const elemProvisorio = pesajeProvisorio.Tara.find( ({ IdElemTara, idPedidosProd }) =>
+              IdElemTara === itemTara.IdElemTara &&
+              element?.idPedidosProd === idPedidosProd
+        );
 
-          return {
-            ...itemTara,
-            cantidad: elemProvisorio?.Cantidad || "",
-            Peso: elemProvisorio?.Peso || "",
-            subTotal: elemProvisorio?.Cantidad * elemProvisorio?.Peso || ""
-          }
-        });
+        return {
+          ...itemTara,
+          cantidad: elemProvisorio?.Cantidad || "",
+          Peso: elemProvisorio?.Peso || "",
+          subTotal: elemProvisorio?.Cantidad * elemProvisorio?.Peso || ""
+        }
+      });
         
-        element.CantidadAnterior = element.Cantidad
 
-        element.Cantidad = pesajeProvisorio.Cantidad;
-
-        if (prodData.EsPesoFijo) {
+        if (prodDetails.EsPesoFijo) {
           const pesajesProvisoriosFijos = {
             TaraTotal: 0,
             PesoNeto: parseFloat(
-              pesajeProvisorio.Cantidad * prodData.PesoPromedio
+              pesajeProvisorio.Cantidad * prodDetails.PesoPromedio
             ).toFixed(2),
             PesoPorPieza: parseFloat(
-              pesajeProvisorio.Cantidad * prodData.PesoPromedio
+              pesajeProvisorio.Cantidad * prodDetails.PesoPromedio
             ).toFixed(2),
             PesoBruto: pesajeProvisorio.PesoBruto,
             Taras: tarasProvisorio,
@@ -76,12 +77,12 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
           taraFinal.TaraTotal !== 0
             ? (taraFinal.PesoBruto = parseFloat(
-                taraFinal.producto.Cantidad * prodData.PesoPromedio +
+                taraFinal.producto.Cantidad * prodDetails.PesoPromedio +
                   taraFinal.TaraTotal
               ).toFixed(2))
 
             : (taraFinal.PesoBruto = parseFloat(
-                taraFinal.producto.Cantidad * prodData.PesoPromedio
+                taraFinal.producto.Cantidad * prodDetails.PesoPromedio
               ).toFixed(2));
 
           taraFinal.PesoNeto = parseFloat(
@@ -119,7 +120,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
         }
 
-        const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } = taraFinal;
+        const { PesoBruto, Taras, PesoPorPieza, PesoNeto } = taraFinal;
 
         let ProductoPesado = pedidoApreparar.Productos;
 
@@ -139,12 +140,11 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
           setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
         }
-
     });
     //eslint-disable-next-line
-  }, [pesajesProvisorios, taras, prodData]);
+  }, [pesajesProvisorios, taras]);
 
-  const obtenerPedidos = async (prod) => {
+  const obtenerDetallesProductos = async () => {
     try {
       const auth = JSON.parse(sessionStorage.getItem("auth"));
       const result = await fetch(
@@ -157,7 +157,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       }
 
       const json = await result.json();
-      setProdData(() => json.find(({ Codigo }) => prod.Codigo === Codigo));
+      setProducDetails(json);
     } catch (err) {
       console.log(err);
       toast.error(err);
@@ -176,6 +176,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       }
 
       await pedirTaras();
+      await obtenerDetallesProductos()
 
       const json = await result.json();
       setPesajesProvisorios(json);
@@ -210,14 +211,12 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
   /* Manejadores de eventos */
   const handlePesar = async (productId) => {
-    const product = pedido.Productos.find( product => product.idPedidosProd === productId )
-
-    await obtenerPesajesProvisorios()
-    await obtenerPedidos(product);
+    const product = pedidoApreparar.Productos.find( product => product.idPedidosProd === productId )
+    await obtenerPesajesProvisorios();
     setProductoApesar(product);
   };
 
-  const handleGuardarPesaje = (pesaje, units, product) => {
+  const handleGuardarPesaje = async (pesaje, units, product) => {
     const productIdx = pedidoApreparar.Productos.findIndex( product_ => product_.idPedidosProd === product.idPedidosProd)
 
     const products = pedidoApreparar.Productos
@@ -229,7 +228,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       PesoNeto: pesaje.PesoNeto
     }
 
-    products[productIdx].CantidadAnterior = product.Cantidad
+    // products[productIdx].CantidadAnterior = product.Cantidad
 
     products[productIdx].Cantidad = units
     
@@ -267,7 +266,6 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
     handlePesajeProvisorio(saveProvisoriPesaje);
     setProductoApesar(undefined);
-
   };
 
   const handleEliminarPesaje = (index) => (e) => {
@@ -353,9 +351,28 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   };
 
   const validateButtonSave = () => {
-
+  
     const allProducsMeetsConditions = pedidoApreparar.Productos.every( product => {
-      return product?.Pesaje || product?.DesecharFaltante || product?.NuevoPedido
+      const productOrig = pedidoOrig.Productos.find( productOrig => productOrig.idPedidosProd === product.idPedidosProd )
+
+      const productMissingAmount = product.Cantidad < productOrig.Cantidad
+
+      if(product?.Pesaje){
+        if(productMissingAmount && (product?.DesecharFaltante || product?.NuevoPedido)){
+          return true
+        }
+
+        if(product.Cantidad >= productOrig.Cantidad){
+          return true
+        }
+  
+      }else {
+        if( (product.Cantidad >= productOrig.Cantidad) && (product?.DesecharFaltante || product?.NuevoPedido)){
+          return true
+        }
+      }
+
+      return false
     })
 
     return !allProducsMeetsConditions
@@ -364,6 +381,11 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
  const handleOnGuargar = (e) => {
   e.preventDefault();
   onGuardar(pedidoApreparar)
+ }
+
+ const handleShowButtons = (idPedidosProd, newCantidad, pesaje) => {
+    const productOrig = pedidoOrig.Productos.find( product => product.idPedidosProd === idPedidosProd )
+    return !pesaje || (newCantidad < productOrig.Cantidad)
  }
 
   return !productoApesar ? (    
@@ -438,13 +460,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                   <span className="titulo">{Presentacion}</span>
                   <div style={{ display: "flex" }}>
                     <div
-                      hidden={
-                        !(  
-                          Pesaje === undefined ||
-                          CantidadAnterior === null ||
-                          CantidadAnterior > Cantidad
-                        )
-                      }
+                      hidden={!handleShowButtons(idPedidosProd, Cantidad, Pesaje)}
                     >
                       <button
                         title="Presione para cargar el faltante a un nuevo pedido"
@@ -529,8 +545,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       )}
       onGuardar={handleGuardarPesaje}
       onCancelar={handleCancelarPesaje}
-      prodData={prodData}
-      pedirData={obtenerPedidos}
+      pedirData={obtenerDetallesProductos}
     />
   );
 };
