@@ -370,6 +370,10 @@ const ModoPreparar = ({ pedido, salir, onGuardar, pedidoOrig }) => {
         if( (product.Cantidad >= productOrig.Cantidad) && (product?.DesecharFaltante || product?.NuevoPedido)){
           return true
         }
+
+        if(productMissingAmount && (product?.DesecharFaltante || product?.NuevoPedido)){
+          return true
+        }
       }
 
       return false
