@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import ModoPesar from "./ModoPesar";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
@@ -268,14 +268,16 @@ const ModoPreparar = ({ pedido, salir, onGuardar, pedidoOrig }) => {
     setProductoApesar(undefined);
   };
 
-  const handleEliminarPesaje = (index) => (e) => {
+  const handleEliminarPesaje = (index, idPedidosProd) => (e) => {
+    const productOrig = pedidoOrig.Productos.find( product => product.idPedidosProd === idPedidosProd )
+
     let ProductoPesado = pedidoApreparar.Productos;
 
     if(!ProductoPesado[index].Pesaje) return
 
     ProductoPesado[index].Pesaje = undefined;
 
-    ProductoPesado[index].Cantidad = ProductoPesado[index].CantidadAnterior;
+    ProductoPesado[index].Cantidad = productOrig.Cantidad // ProductoPesado[index].CantidadAnterior;
 
     /* const cloneSaveData = [...saveDataNew];
 
@@ -490,7 +492,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar, pedidoOrig }) => {
                     </div>
                     
                     <button
-                        onClick={() => handlePesar(idPedidosProd) }
+                        onClick={() => handlePesar(idPedidosProd, idPedidosProd) }
                         className="boton pesaje"
                       >
                         Pesar
@@ -498,7 +500,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar, pedidoOrig }) => {
 
                       <button
                         className="boton pesaje"
-                        onClick={handleEliminarPesaje(indexProd)}
+                        onClick={handleEliminarPesaje(indexProd, idPedidosProd)}
                       >
                         Eliminar pesaje
                       </button>
@@ -554,4 +556,6 @@ const ModoPreparar = ({ pedido, salir, onGuardar, pedidoOrig }) => {
   );
 };
 
-export default ModoPreparar;
+export default memo(ModoPreparar, (prevProps, nextProps) => {
+  return JSON.stringify(nextProps.pedidoOrig) !== JSON.stringify(prevProps.pedidoOrig)
+});
