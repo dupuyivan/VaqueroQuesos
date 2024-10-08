@@ -13,6 +13,8 @@ import { logo } from "./logo.json";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { GetPedidosProvider } from "./context/GetPedidos";
+import CuentaCorriente from "./pages/ctaCorriente";
+import EstadoPedido from "./pages/estadoPedido";
 
 function App() {
   const [usuario, setUsuario] = useState();
@@ -54,13 +56,25 @@ function App() {
               <Dashboard usuario={usuario} />
             </GetPedidosProvider>
           </Route>
+
           <Route exact path="/Logout">
             <Logout />
           </Route>
+
           <Route exact path="/">
             <Login LogSucces={LogSucces} logo={logo} />
           </Route>
+
+          <Route exact path="/cuentaCorriente">
+            <CuentaCorriente />
+          </Route>
+
+          <Route exact path="/estadoPedido">
+            <EstadoPedido />
+          </Route>
+
           <Redirect to="/" />
+
         </Switch>
         <ToastContainer />
       </div>
