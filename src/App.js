@@ -8,7 +8,7 @@ import {
   Redirect,
   useHistory,
 } from "react-router-dom";
-import { Login, Carrito, Lista, Dashboard } from "./components";
+import { Login, Carrito, Lista, Dashboard } from "./pages";
 import { logo } from "./logo.json";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
