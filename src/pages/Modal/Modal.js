@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { BASE_URL } from "../../BaseURL.json";
 import "./Modal.css";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
+
 const Modal = ({ isOpen, onClose, producto }) => {
   const medidaDefault = producto.Medidas ? producto.Medidas[0].IdMedida : 0;
   const [inputs, setInputs] = useState({

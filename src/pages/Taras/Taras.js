@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router";
 import useModal from "../../hooks/useModal";
 import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 import "./Taras.css";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
+
 
 /* Filtros */
 const filtrarTarasPorPeso = (peso, taras) => {

@@ -3,10 +3,11 @@ import "./Lista.css";
 import { Modal } from "../../pages";
 import { Redirect, useHistory } from "react-router";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../BaseURL.json";
 import { Link } from "react-router-dom";
 import Header from "../../components/header";
 import { Container } from "@mui/material";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 function Lista() {
   const [isOpenModal, handleModal] = useModal();

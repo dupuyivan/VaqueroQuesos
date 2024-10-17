@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import "./EstadoPedidos.css";
 import { StateCircle } from "./StateCircle/StateCircle";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
+
 
 const procesarPedidos = (pedidosBruto) => {
   let pedidosProcesados = [];

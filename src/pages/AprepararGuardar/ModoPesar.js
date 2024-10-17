@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { BASE_URL } from "../../BaseURL.json";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 const calcularTara = (tara) => {
   let tarasTemp = tara;

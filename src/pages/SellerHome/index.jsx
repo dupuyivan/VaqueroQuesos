@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { useHistory } from 'react-router-dom'
-import { BASE_URL } from "../../BaseURL.json";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
+
 
 const SelecionCliente = ({ clientes, LogSucces }) => {
     const history = useHistory();

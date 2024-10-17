@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import "./CargaProductos.css";
 import "./AddOrEdit.css";
 import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 import useModal from "../../hooks/useModal";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 const obtenerImagen = (imagen) =>
   new Promise((resolve, reject) => {

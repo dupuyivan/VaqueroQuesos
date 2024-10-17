@@ -12,9 +12,10 @@ import {
 import { Route, Switch, useHistory, Link } from "react-router-dom";
 import "./Dashboard.css";
 import Taras from "../Taras/Taras";
-import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
 import Consulta from "../Confirmados/Confirmados";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 const Iconos = {
   Pedidos: <i className="fas fa-list-ul"></i>,

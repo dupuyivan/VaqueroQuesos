@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import "./Login.css";
-import { BASE_URL } from "../../BaseURL.json";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 const Login = ({ logo, LogSucces }) => {
   const history = useHistory();

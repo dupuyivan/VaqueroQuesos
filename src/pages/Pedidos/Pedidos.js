@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./Pedidos.css";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 /* Procesamiento del pedio para poder armar las tablas,
   recibe los datos crudos y devuelve los datos con la estructura necesaria.

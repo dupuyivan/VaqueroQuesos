@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { BASE_URL } from "../BaseURL.json";
 import { useHistory } from "react-router";
 import React from "react";
 import { toast } from "react-toastify";
 import audioMP3 from "./asset/notif.mp3";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 const GetPedidos = createContext();
 

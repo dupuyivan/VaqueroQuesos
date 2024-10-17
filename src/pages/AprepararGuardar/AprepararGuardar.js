@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import ModoPreparar from "./ModoPreparar";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./AprepararGuardar.css";
 import { useLocation } from "react-router-dom";
 import { useGetPedidos } from "../../context/GetPedidos";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 /* Metodos de filtrado */
 const FiltrarCliente = (cliente, pedidos) => {

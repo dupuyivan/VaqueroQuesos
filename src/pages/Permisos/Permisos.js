@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../BaseURL.json";
 import { Iconos } from "../Dashboard/Dashboard";
 import "./Permisos.css";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL
 
 const Permisos = ({ idPermiso }) => {
   const [listaPermisos, setListaPermisos] = useState([]);
