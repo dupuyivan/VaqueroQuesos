@@ -56,11 +56,15 @@ const Login = ({ logo, LogSucces }) => {
           throw new Error("usuario o contraseña incorrecta.");
         }
         setError(null);
+
+        const currentUser = JSON.stringify({ ...json, usuario: target[0].value })
+
         sessionStorage.setItem(
           "auth",
-          JSON.stringify({ ...json, usuario: target[0].value })
+          currentUser
         );
 
+        sessionStorage.setItem('currentUser', currentUser)
         tipo[json.TipoCliente](json, target);
       })
       .catch((err) => setError(err.message))

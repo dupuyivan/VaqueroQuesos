@@ -15,11 +15,15 @@ const Carrito = () => {
   const [productos, setProductos] = useState([]);
   const [observacion, setObservacion] = useState("");
   const [user, setUser] = useState();
+
   const confirmarUsuario = () =>
     JSON.parse(sessionStorage.getItem("auth"))?.TipoCliente === "C";
+
   useEffect(() => {
     const carrito = JSON.parse(sessionStorage.getItem("carrito")) || [];
     const usuario = JSON.parse(sessionStorage.getItem("auth"));
+
+    console.debug('usuario', usuario)
     !confirmarUsuario() && history.push("/");
     setUser(usuario);
     setProductos(carrito);

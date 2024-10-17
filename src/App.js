@@ -95,10 +95,10 @@ function App() {
 
 const BasePage = ({ children, titulo, usuario = {}, LogSucces }) => {
   const handleSwitch = (e) => {
-    sessionStorage.setItem("auth", JSON.stringify({ ...usuario.vendedor }));
+    sessionStorage.setItem("auth", JSON.stringify({ ...usuario?.vendedor }));
   };
   useEffect(() => {
-    if (!usuario.Token) {
+    if (!usuario?.Token) {
       LogSucces();
     }
   }, []);
