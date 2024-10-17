@@ -8,8 +8,6 @@ export default function SelecionCliente ({ clientes, LogSucces }) {
   
     const handleClick = (e) => {
       const Cliente = clientesFiltrados[clienteSeleccionado];
-
-      console.debug('Cliente', Cliente)
       
       sessionStorage.removeItem("auth");
       sessionStorage.setItem("auth", JSON.stringify({ ...Cliente }));

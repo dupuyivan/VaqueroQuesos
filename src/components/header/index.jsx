@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Button } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { useHistory } from "react-router";
 
 export default function Header () {
     const history = useHistory();
-
 
     const handleClick = () => {
         history.goBack()
@@ -14,11 +13,11 @@ export default function Header () {
 return (
     <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
-            <Button variant="outlined"  color='red' startIcon={<BsArrowLeftCircle />} onClick={handleClick}>
-                Volver
-            </Button>
+            <IconButton aria-label="back" size="large" onClick={handleClick}>
+                <BsArrowLeftCircle />        
+            </IconButton>
         </div>  
-        <div style={{ marginLeft:'-7rem' }}>
+        <div style={{ marginLeft:'-4rem' }}>
             <img src="/images/logo.jpg" alt="Logo Vaquero" style={{ width: '12rem', height:'12rem' }} />
             <hr />
         </div>

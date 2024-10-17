@@ -14,7 +14,7 @@ import { ToastContainer } from "react-toastify";
 import { GetPedidosProvider } from "./context/GetPedidos";
 import CuentaCorriente from "./pages/ctaCorriente";
 import EstadoPedido from "./pages/estadoPedido";
-import SellerHome from "./pages/SellerHome";
+import HomeVendedor from "./pages/HomeVendedor";
 
 function App() {
   const [usuario, setUsuario] = useState();
@@ -47,7 +47,7 @@ function App() {
                 usuario={usuario}
                 titulo="Inicio"
               >
-                 <SellerHome LogSucces={LogSucces} />
+                 <HomeVendedor LogSucces={LogSucces} />
               </BasePage>
              
           </Route>
