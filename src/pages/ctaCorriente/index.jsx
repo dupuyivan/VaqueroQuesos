@@ -18,7 +18,7 @@ export default function CuentaCorriente () {
 
 return( 
     <Container maxWidth="xl">
-        <Header />
+        <Header pageName='Cuenta corriente' />
         <div style={{ display: 'flex',  justifyContent:'center' }}>
             <Autocomplete
                 onChange={(_, newVal) => handleSelect(newVal)}
