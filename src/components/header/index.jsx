@@ -14,7 +14,7 @@ export default function Header () {
 return (
     <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
-            <Button variant="outlined" color='red' startIcon={<BsArrowLeftCircle />} onClick={handleClick}>
+            <Button variant="outlined"  color='red' startIcon={<BsArrowLeftCircle />} onClick={handleClick}>
                 Volver
             </Button>
         </div>  

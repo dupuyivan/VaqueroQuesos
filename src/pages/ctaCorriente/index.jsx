@@ -16,6 +16,41 @@ const clientsData = [
                 expirationDate: '04/09/2024',
                 moraInDays: 29
             },
+            {
+                id:'2',
+                receiptId: 'PPTO-0000-00007645',
+                amount: '2.680.360,60 ',
+                expirationDate: '06/09/2024',
+                moraInDays: 27
+            },
+            {
+                id:'3',
+                receiptId: 'PPTO-0000-00007663',
+                amount: '131.887,57 ',
+                expirationDate: '10/09/2024',
+                moraInDays: 23
+            },
+            {
+                id:'4',
+                receiptId: 'PPTO-0000-0000762293y438',
+                amount: '4.030.941,30',
+                expirationDate: '04/09/2024',
+                moraInDays: 29
+            },
+            {
+                id:'5',
+                receiptId: 'PPTO-0000-9854234',
+                amount: '2.680.360,60',
+                expirationDate: '06/10/2024',
+                moraInDays: 27
+            },
+            {
+                id:'6',
+                receiptId: 'PPTO-0000-0000766328946',
+                amount: '131.887,57 ',
+                expirationDate: '10/11/2024',
+                moraInDays: 23
+            },
         ]
     },
     {
@@ -40,25 +75,29 @@ function ClientsTable ({ bills }) {
             field: 'receiptId',
             headerName: 'Comprobante N°',
             sortable: true,
-            width: 200
+            width: 200,
+            headerAlign: 'center',
         },
         {
             field: 'amount',
             headerName: 'Importe',
             sortable: true,
-            width: 200
+            width: 200,
+            headerAlign: 'center',
         },
         {
             field: 'expirationDate',
             headerName: 'Vencimiento',
             sortable: true,
-            width: 200
+            width: 200,
+            headerAlign: 'center',
         },
         {
             field: 'moraInDays',
             headerName: 'Mora',
             sortable: true,
-            width: 200
+            width: 200,
+            headerAlign: 'center',
         },
     ]
 
@@ -67,6 +106,9 @@ return (
         rows={bills}
         columns={columns}
         pageSizeOptions={[0]}
+        getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+        }
     />
 )}
 
@@ -81,6 +123,7 @@ export default function CuentaCorriente () {
     }, [])
 
     const handleSelect = (val) => {
+        if(!val) return setSelectedClient()
         const clientFound = clientsData.find( client => client.id === val.id )
         setSelectedClient(clientFound)
     }
@@ -100,7 +143,7 @@ return(
             />
         </div>
         <div style={{ display: 'flex',  justifyContent:'center', marginTop: '2rem'}}>
-            <div style={{ width: '70%' }}>
+            <div style={{ width: '75%', minHeight:'25rem', }}>
             {
                 selectedClient 
                     &&  <ClientsTable bills={selectedClient.bills} />
