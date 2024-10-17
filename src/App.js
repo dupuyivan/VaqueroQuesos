@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import { GetPedidosProvider } from "./context/GetPedidos";
 import CuentaCorriente from "./pages/ctaCorriente";
 import EstadoPedido from "./pages/estadoPedido";
+import SellerHome from "./pages/SellerHome";
 
 function App() {
   const [usuario, setUsuario] = useState();
@@ -39,6 +40,17 @@ function App() {
             >
               <Lista />
             </BasePage>
+          </Route>
+
+          <Route exact path="/vendedor">
+            <BasePage
+                LogSucces={LogSucces}
+                usuario={usuario}
+                titulo="Inicio"
+              >
+                 <SellerHome LogSucces={LogSucces} />
+              </BasePage>
+             
           </Route>
 
           <Route exact path="/Carrito">
@@ -99,7 +111,7 @@ const BasePage = ({ children, titulo, usuario = {}, LogSucces }) => {
           <i className="fas fa-sign-out-alt"></i>
         </Link>
         {usuario.isVendedor && (
-          <Link to="/" onClick={handleSwitch}>
+          <Link to="/vendedor" onClick={handleSwitch}>
             <i className="fas fa-random"></i>
           </Link>
         )}

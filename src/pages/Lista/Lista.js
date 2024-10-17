@@ -5,6 +5,8 @@ import { Redirect, useHistory } from "react-router";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../BaseURL.json";
 import { Link } from "react-router-dom";
+import Header from "../../components/header";
+import { Container } from "@mui/material";
 
 function Lista() {
   const [isOpenModal, handleModal] = useModal();
@@ -59,10 +61,12 @@ function Lista() {
     pedirLista();
     obtenerCarrito();
   }, []);
+
   const handleClick = (producto) => (e) => {
     SetProductoAagregar(producto);
     handleModal();
   };
+
   return sessionStorage.getItem("auth") ? (
     <>
       {productoAagregar ? (
