@@ -1,4 +1,9 @@
 
+* V1.1.0: Se agrega visualizacion de la cuenta corriente de los clientes de un vendedor
+          Se agrega visualizacion de los estados de pedidos de un cliente
+          Se cambia use de baseUrl.json por env 
+          Se cambia el uso de logo.json por archivo estatico
+
 * V1.1.0: Feature: Se muestra el pesaje guardado de cada producto
           Feature: Se cambia el texto del boton "Enviar a facturacion" y se agrega validacion para que no permita enviar con productos sin pesar
           Feature: Se muestra la observacion del que pesa en facturacion

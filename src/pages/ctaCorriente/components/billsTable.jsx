@@ -1,36 +1,22 @@
 import React, { useEffect, useState } from "react"
-import { DataGrid } from '@mui/x-data-grid'
-import { Container, Text, Typography } from '@mui/material'
-
+import { getClientBills } from "../../../services/client.service";
+import CustomTable from "../../../components/customTable";
 
 export default function ClientsTable ({ client }) {
     const [ data, setData ] = useState([])
     const [ isLoading, setIsLoading ] = useState(false)
 
     useEffect(() => {
+        if(!client) return
         setIsLoading(true)
         getBills(client)
-        console.debug()
     }, [client])
 
+
     const getBills = async (client) =>{
-        const clientId = client.IdCliente
-    
-        try {
-            const auth = JSON.parse(sessionStorage.getItem("currentUser"));
-    
-            const result = await fetch(`${process.env.REACT_APP_BASE_URL}iClientesSP/CuentasCorrientesVendedor?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdCliente=${clientId}`)
-            
-            const bills = await result.json()
-    
-            console.debug('getBills', bills)
-            setData(bills)
-        } catch (error) {
-            
-        }
-        finally {
-            setIsLoading(false)
-        }
+        const res = await getClientBills({ client })        
+        setData(res)
+        setIsLoading(false)
     }
 
     const columns = [
@@ -48,7 +34,12 @@ export default function ClientsTable ({ client }) {
             sortable: true,
             width: 250,
             headerAlign: 'center',
-            align:'center'
+            align:'center',
+            valueGetter: (value) => {                
+                return value && value >= 0
+                    ? `$${value.toLocaleString('es-AR')}`
+                    : value
+            },
         },
         {
             headerName: 'Fecha de vencimiento',
@@ -56,7 +47,14 @@ export default function ClientsTable ({ client }) {
             sortable: true,
             width: 250,
             headerAlign: 'center',
-            align:'center'
+            align:'center',
+            valueGetter: (value) => {                
+                const date = new Date(value)
+
+                return date
+                    ? `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`
+                    : date
+            },
         },
         {
             headerName: 'Dias de mora',
@@ -69,29 +67,9 @@ export default function ClientsTable ({ client }) {
     ]
 
 return (
-    <DataGrid
-        rows={data}
+    <CustomTable 
         columns={columns}
-        loading={isLoading}
-        getRowId={row => row.$id}
-        nonce="No hay datos"
-        getRowClassName={(params) =>
-            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-        }
-        slotProps={{
-            loadingOverlay: {
-              variant: 'skeleton',
-              noRowsVariant: 'skeleton',
-            },
-        }}
-        slots={{
-            noRowsOverlay: () => (
-                <Container>
-                    <Typography variant="h4" gutterBottom>
-                        h4. Heading
-                    </Typography>
-                </Container>
-            )
-        }}
+        rows={data}
+        isLoading={isLoading}
     />
 )}
