@@ -11,7 +11,7 @@ export default function CuentaCorriente () {
     const [selectedClient, setSelectedClient] = useState()
 
     const handleSelect = (val) => {
-        if(!val) return setSelectedClient()
+        setSelectedClient(val)
     }
 
     const renderInput = params => <TextField {...params} label="Elige un cliente" />
@@ -25,6 +25,7 @@ return(
                 disablePortal
                 options={clients}
                 getOptionLabel={(option) => option.Nombre}
+                getOptionKey={(option) => option.$id}
                 renderInput={renderInput}
                 sx={{ width: 600 }}
             />
@@ -33,7 +34,7 @@ return(
             <div style={{ width: '75%', minHeight:'25rem', }}>
             {
                 selectedClient 
-                    &&  <BillsTable bills={selectedClient.bills} />
+                    &&  <BillsTable client={selectedClient} />
             }
             </div>
         </div>
