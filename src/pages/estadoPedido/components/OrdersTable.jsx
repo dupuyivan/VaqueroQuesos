@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react"
 import moment from "moment/moment"
 import CustomTable from "../../../components/customTable"
 import { getOrdersByClientAndRange } from "../../../services/orders.service"
+import { TextField } from "@mui/material"
+
+let origData = []
 
 export default function OrdersTable ({ client }) {
     const [ data, setData ] = useState([])
@@ -12,7 +15,7 @@ export default function OrdersTable ({ client }) {
             headerName: 'Pedido N°',
             field: 'Pedido',
             sortable: true,
-            width: 200,
+            flex: 1,
             headerAlign: 'center',
             align:'center'
         },
@@ -20,7 +23,7 @@ export default function OrdersTable ({ client }) {
             headerName: 'Nombre producto',
             field: 'Producto',
             sortable: true,
-            width: 250,
+            flex: 1,
             headerAlign: 'center',
             align:'center'
 
@@ -29,7 +32,7 @@ export default function OrdersTable ({ client }) {
             headerName: 'Cantidad pedida',
             field: 'CantidadPedida',
             sortable: true,
-            width: 200,
+            flex: 1,
             headerAlign: 'center',
             align:'center'
         },
@@ -37,7 +40,7 @@ export default function OrdersTable ({ client }) {
             headerName: 'Cantidad a preparar',
             field: 'CantidadAPreparar',
             sortable: true,
-            width: 200,
+            flex: 1,
             headerAlign: 'center',
             align:'center'
 
@@ -46,7 +49,7 @@ export default function OrdersTable ({ client }) {
             headerName: 'Cantidad preparada',
             field: 'CantidadPreparados',
             sortable: true,
-            width: 200,
+            flex: 1,
             headerAlign: 'center',
             align:'center'
 
@@ -55,7 +58,7 @@ export default function OrdersTable ({ client }) {
             headerName: 'Unidades preparadas',
             field: 'Avance',
             sortable: true,
-            width: 200,
+            flex: 1,
             headerAlign: 'center',
             align:'center'
         },
@@ -71,13 +74,37 @@ export default function OrdersTable ({ client }) {
         const until = moment().format(format)
         const data = await getOrdersByClientAndRange({ client, since, until, })
         setData(data)
+        origData = JSON.parse(JSON.stringify(data))
         setIsLoading(false)
     }
 
+    const handleFilter = (evt) => {
+        const text = evt.target.value || ''
+    
+        if(!text.length) {
+            setData(origData)
+            return 
+        }
+
+
+        const filtered = origData.filter( bill => {
+                const Pedido = bill.Pedido?.toString()?.includes(text)
+                const Producto = bill.Producto?.toString()?.includes(text)
+                const CantidadPedida = bill.CantidadPedida?.toString()?.includes(text)
+                const CantidadAPreparar = bill.CantidadAPreparar?.toString()?.includes(text)
+            return Pedido ||  Producto || CantidadPedida || CantidadAPreparar
+        })
+        setData(filtered)
+    }
+
 return (
-    <CustomTable 
-        columns={columns}
-        rows={data}
-        isLoading={isLoading}
-    />
+    <>
+        <TextField label="Busqueda" variant="outlined" onChange={handleFilter} />
+        <hr />
+        <CustomTable 
+            columns={columns}
+            rows={data}
+            isLoading={isLoading}
+        />
+    </>
 )}

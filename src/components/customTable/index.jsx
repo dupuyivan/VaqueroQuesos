@@ -17,6 +17,7 @@ return (
         columns={columns}
         rows={rows}
         loading={isLoading}
+        autosizeOnMount={true}
         localeText={esES.components.MuiDataGrid.defaultProps.localeText}
         getRowId={row => row.$id}
         getRowClassName={(params) =>

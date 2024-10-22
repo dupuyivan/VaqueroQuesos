@@ -17,9 +17,8 @@ export default function ClientsTable ({ client }) {
     }
 
     const parseAmount = (amount) => {
-        return amount && amount >= 0
-        ? `$${amount.toLocaleString('es-AR')}`
-        : amount
+        const mount = amount || 0
+        return `$${mount.toLocaleString('es-AR')}`
     }
 
     const columns = [
@@ -27,42 +26,47 @@ export default function ClientsTable ({ client }) {
             headerName: 'Comprobante N°',
             field: 'Comprobante',
             sortable: true,
-            width: 250,
+            flex: 1,
             headerAlign: 'center',
-            align:'center'
+            align:'center',
+            display: 'flex',
         },
         {
             headerName: 'Importe ',
             field: 'Importe',
             sortable: true,
-            width: 250,
+            flex: 1,
             headerAlign: 'center',
             align:'center',
-            valueGetter: (value) => parseAmount(value),
+            display: 'flex',
+            valueFormatter: (value) => parseAmount(value),
         },
         {
             headerName: 'Fecha de creacion',
             field: 'Fecha',
             sortable: true,
-            width: 250,
+            flex: 1,
             headerAlign: 'center',
             align:'center',
-            valueGetter: (value) => formateDateFromIso(value)
+            display: 'flex',
+            valueFormatter: (value) => formateDateFromIso(value)
         },
         {
             headerName: 'Fecha de vencimiento',
             field: 'FechaVencimiento',
             sortable: true,
-            width: 250,
+            flex: 1,
             headerAlign: 'center',
             align:'center',
-            valueGetter: (value) => formateDateFromIso(value)
+            display: 'flex',
+            valueFormatter: (value) => formateDateFromIso(value)
         },
         {
             headerName: 'Dias de mora',
             field: 'DiasMora',
             sortable: true,
-            width: 250,
+            flex: 1,
+            display: 'flex',
             headerAlign: 'center',
             align:'center'
         },
@@ -91,7 +95,7 @@ export default function ClientsTable ({ client }) {
         }
 
 
-        const filtered = data.filter( bill => {
+        const filtered = origData.filter( bill => {
                 const ticket = bill.Comprobante?.toString()?.includes(text)
                 const amount = bill.Importe?.toString()?.includes(text)
                 const billDate = bill.Fecha && formateDateFromIso(bill.Fecha)?.toString()?.includes(text)
