@@ -29,7 +29,7 @@ jobs:
 
     - name: Build react app
       env:
-        REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
+        REACT_APP_BASE_URL: ${{ env.REACT_APP_BASE_URL }}
       run: |
         npm ci
         npm run build
@@ -46,8 +46,5 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifact_name: ${{ github.sha }}
       env: 
-        GITHUB_ENV: ${{ secrets.GITHUB_ENV }}
-    
-    environment:
-      name: github-pages
+        GITHUB_ENV: ${{ env.GITHUB_ENV }}
 
