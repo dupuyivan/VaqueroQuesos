@@ -45,4 +45,9 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifact_name: ${{ github.sha }}
+      env: 
+        GITHUB_ENV: ${{ secrets.GITHUB_ENV }}
+    
+    environment:
+      name: github-pages
 
