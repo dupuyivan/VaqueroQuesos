@@ -2,7 +2,6 @@
   "name": "quesos-vaquero",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://dupuyivan.github.io/vaqueroquesos",
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
